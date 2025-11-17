@@ -18,7 +18,19 @@ import { contactUsRouter } from "./routes/contactUs.route.js";
 import webhookRouter from "./routes/pyment/webhook.routes.js";
 import { adminRoutes } from "./routes/adminRoutes/admin.routes.js";
 import userPaymentRouter from "./routes/userPayment.route.js";
+import connectDb from "./db/db.js";
+
 export default app  = express()
+const PORT=process.env.PORT
+connectDb().then(() => {
+
+    
+        console.log("Server running on port ",PORT);
+}).catch((error) => {
+
+    console.log("DB connection failed: ", error);
+    return new ApiError(500, "DB connection failed")
+});
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
