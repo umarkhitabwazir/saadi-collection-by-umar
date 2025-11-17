@@ -19,14 +19,6 @@ import webhookRouter from "./routes/pyment/webhook.routes.js";
 import { adminRoutes } from "./routes/adminRoutes/admin.routes.js";
 import userPaymentRouter from "./routes/userPayment.route.js";
 const app = express()
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN,
-    credentials: true, 
-   
-
-  })
-);
 app.get('/', (req, res) => {
   res.send(`
     <html>
@@ -86,6 +78,15 @@ app.get('/', (req, res) => {
     </html>
   `);
 });
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+  })
+)
+
+
 
 
 app.use(express.json({ limit: "10mb" }));
