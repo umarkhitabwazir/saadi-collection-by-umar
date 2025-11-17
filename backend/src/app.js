@@ -18,7 +18,7 @@ import { contactUsRouter } from "./routes/contactUs.route.js";
 import webhookRouter from "./routes/pyment/webhook.routes.js";
 import { adminRoutes } from "./routes/adminRoutes/admin.routes.js";
 import userPaymentRouter from "./routes/userPayment.route.js";
-const app = express()
+export default app  = express()
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN,
@@ -135,7 +135,7 @@ app.use((err, req, res, next) => {
 
 
 
-export default app 
+
 
 
 
