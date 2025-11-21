@@ -24,7 +24,10 @@ const FavouriteProductsComponent = () => {
     getFavProducts()
   }, [])
   const removeFavHandler = async (productId: string) => {
+<<<<<<< HEAD
 
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     try {
       await axios.delete(`${API_URL}/remove-fav/${productId}`, { withCredentials: true })
       await getFavProducts()
@@ -56,6 +59,7 @@ const FavouriteProductsComponent = () => {
 
               className="bg-transparent border flex flex-wrap flex-col gap-3 rounded-xl p-4">
               <div
+<<<<<<< HEAD
                 className='cursor-pointer'
                 onClick={() => {
                   if (!fav.item) {
@@ -128,6 +132,33 @@ const FavouriteProductsComponent = () => {
               </div>
 
 
+=======
+              className='cursor-pointer'
+                onClick={() =>
+                  router.push(`/buyer/order?query=${btoa(JSON.stringify({ productId: fav.item._id, p: fav.item.price, stock: fav.item.countInStock, rating: fav.item.rating }))}`)
+
+                }
+              >
+                <Image
+                  className='w-auto h-auto bg-transparent'
+                  src={fav.item.image}
+                  width={100}
+                  height={100}
+                  alt="fav product img" />
+                <p className="font-medium text-gray-800">{fav.item.title}</p>
+                <p className="text-gray-600 text-sm mb-2">{fav.item.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-gray-900">{fav.item.price}</span>
+                </div>
+              </div>
+                <button
+                  onClick={() => removeFavHandler(fav.item._id)}
+                  className="text-red-500 hover:text-red-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                  </svg>
+                </button>
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
             </div>
           ))}
         </div>

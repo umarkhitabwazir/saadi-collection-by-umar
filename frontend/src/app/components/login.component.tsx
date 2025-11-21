@@ -10,7 +10,10 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import NoInternetComponent from './NoInternet.component';
 import Image from 'next/image';
+<<<<<<< HEAD
 import SignInWithGoogleComponent from './SignInWithGoogle.component';
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
 
 const LoginComponent = () => {
@@ -98,7 +101,13 @@ const LoginComponent = () => {
                         setError(undefined)
                     }, 3000)
                 }
+<<<<<<< HEAD
 
+=======
+                if (err.code === "ERR_NETWORK") {
+                    setLoading(true)
+                }
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
             }
         }
@@ -192,6 +201,7 @@ const LoginComponent = () => {
 
                         </div>
                     </form>
+<<<<<<< HEAD
                     <div className='flex flex-col items-center justify-center space-y-6 px-4 py-8'>
 
                         {/* Divider with text */}
@@ -236,16 +246,45 @@ const LoginComponent = () => {
                                 className="text-sm font-medium text-blue-600 hover:text-blue-700 focus:text-blue-700 focus:outline-none transition-colors duration-200"
                             >
                                 Forgot your password?
+=======
+                    <div className='flex items-center justify-center flex-col'>
+
+                        <h4 className="text-center text-gray-500 text-sm">
+                            or
+                        </h4>
+
+                        <div className="flex items-center justify-center flex-col mt-6 space-y-4">
+                            <Link
+                                href="/sign-up"
+                                className="w-full text-center py-2 px-4 rounded-lg bg-gray-800 text-white font-medium hover:bg-gray-900 transition-colors duration-200"
+                            >
+                                Sign Up
+                            </Link>
+                        </div>
+
+                        <div className="flex flex-wrap justify-between items-center mt-6 gap-3">
+                            <Link
+                                href="/reset-password"
+                                className="text-sm font-medium text-blue-400 hover:text-blue-500 transition-colors duration-200"
+                            >
+                                Forgot Password?
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
                             </Link>
 
                             <Link
                                 href="/"
+<<<<<<< HEAD
                                 className="inline-flex items-center text-sm font-medium text-gray-200 hover:text-gray-100 focus:text-gray-50 focus:outline-none transition-colors duration-200 group"
                             >
                                 Return to Home
                                 <svg className="ml-1 w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
+=======
+                                className="text-sm font-medium text-gray-300 hover:text-white transition-colors duration-200"
+                            >
+                                Home Page ↗
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
                             </Link>
                         </div>
 

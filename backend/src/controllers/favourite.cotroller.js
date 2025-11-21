@@ -20,6 +20,10 @@ try {
             throw new ApiError(401,'product not Founded!')
         }
         const isExistProductInFav=await Favorite.find({item:isExitProduct._id})
+<<<<<<< HEAD
+=======
+        console.log('isExistProductInFav',isExistProductInFav)
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         if (isExistProductInFav.length !==0) {
             
        return res.status(409).json(new ApiResponse(409,isExistProductInFav, "Favorite already exists for this user."))
@@ -51,9 +55,13 @@ const removeFavProduct=asyncHandler(async(req,res)=>{
     
         const isExitProduct=await Product.findById(objId)
         if (!isExitProduct) {
+<<<<<<< HEAD
             const findFav=await Favorite.findByIdAndDelete(objId)
       return  res.status(204).json(new ApiResponse(204,findFav))
 
+=======
+            throw new ApiError(404,'product not founded')
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         }
         const removeproductFromFav=await Favorite.deleteOne({item:isExitProduct._id})
         res.status(204).json(new ApiResponse(204,removeproductFromFav))

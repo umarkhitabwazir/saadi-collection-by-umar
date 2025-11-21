@@ -35,13 +35,19 @@ const SellerOrdersComponent = () => {
     try {
       const response = await axios.get(`${API_URL}/seller/get-ordered-products`, { withCredentials: true })
       const data = await response.data.data
+<<<<<<< HEAD
       console.log("data",data)
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
       setAdminOrders(data)
       setLoading(false)
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+<<<<<<< HEAD
       setLoading(false)
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
         const notLoggedIn = error.response?.data.error === 'Unauthorized'
         if (notLoggedIn) {
@@ -384,7 +390,11 @@ const SellerOrdersComponent = () => {
                       <h4 className="text-md font-semibold text-gray-700 mb-4 pb-2 border-b">Products</h4>
                       <div className="space-y-4">
                         {order.products.map((p) => (
+<<<<<<< HEAD
                          p.productId ? <div key={p.productId._id} className="flex flex-wrap items-start gap-3">
+=======
+                          <div key={p.productId._id} className="flex flex-wrap items-start gap-3">
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
                             <div className="bg-gray-100 border rounded-md overflow-hidden">
                               <Image
@@ -403,11 +413,14 @@ const SellerOrdersComponent = () => {
                               </div>
                             </div>
                           </div>
+<<<<<<< HEAD
                           :
                        <div key={order._id} className="p-4 bg-red-50 text-red-700 rounded-md ">
   Product was deleted. 
 </div>
 
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
                         ))}
                       </div>
                     </div>

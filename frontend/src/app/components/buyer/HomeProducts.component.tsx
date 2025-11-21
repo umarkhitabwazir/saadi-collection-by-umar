@@ -1,6 +1,10 @@
 "use client";
 
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
+=======
+import React, {  useEffect, useState } from 'react';
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import { usePathname, useSearchParams } from 'next/navigation';
@@ -34,7 +38,11 @@ const Products = () => {
   const favIdInParams = searchParams.get("favId");
 
 
+<<<<<<< HEAD
   const { fetchData } = useFetchData(setLoading);
+=======
+const { fetchData } = useFetchData(setLoading);
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -66,7 +74,11 @@ const Products = () => {
   const fetchSearchedProducts = async () => {
     try {
       const response = await axios.get(`${API_URL}/search-products?search=${searchedProducts}`);
+<<<<<<< HEAD
       setProducts(response.data.data);
+=======
+         setProducts(response.data.data);
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
       setSearchResult(response.data.data.length);
       setError(null);
     } catch (err: unknown) {
@@ -82,10 +94,17 @@ const Products = () => {
       fetchSearchedProducts();
     }
 
+<<<<<<< HEAD
     if (!searchedProducts && !categoryName) {
 
       fetchProducts();
     }
+=======
+if (!searchedProducts && !categoryName){
+
+  fetchProducts();
+}
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
   }, [API_URL, sort, searchedProducts]);
   const fetchAllReviews = async () => {
@@ -107,15 +126,23 @@ const Products = () => {
   const getFavProducts = async () => {
     try {
       const res = await axios.get(`${API_URL}/get-fav-product`, { withCredentials: true })
+<<<<<<< HEAD
 const productIds = res.data.data
   .map((fav: FavInterface) => fav.item?._id)
   .filter((id:string): id is string => Boolean(id));
 
+=======
+
+      const productIds = res.data.data.map((fav: FavInterface) => fav.item._id)
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
       setFavProductsIds(productIds)
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+<<<<<<< HEAD
         console.log(error.code)
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
       }
     }
   }
@@ -133,7 +160,11 @@ const productIds = res.data.data
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         setError(error.response?.data.error || "An error occurred while fetching products.");
       }
       if (error) {
@@ -168,12 +199,17 @@ const productIds = res.data.data
       getFavProducts()
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+<<<<<<< HEAD
         if (error.response?.status === 401) {
+=======
+        if (error.response?.status===401) {
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
           router.push(`/login?favId=${productId}`)
         }
       }
     }
   }
+<<<<<<< HEAD
   const removeFavHandler = async (productId: string) => {
     try {
       await axios.delete(`${API_URL}/remove-fav/${productId}`, { withCredentials: true })
@@ -183,6 +219,17 @@ const productIds = res.data.data
       if (error instanceof AxiosError) {
       }
     }
+=======
+  const removeFavHandler=async(productId:string)=>{
+try {
+      await axios.delete(`${API_URL}/remove-fav/${productId}`,  { withCredentials: true })
+      await getFavProducts()
+  
+} catch (error:unknown) {
+  if (error instanceof AxiosError) {
+  }
+}
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
   }
   useEffect(() => {
     if (favIdInParams) {
@@ -207,11 +254,16 @@ const productIds = res.data.data
       )}
       {categoryName && (
         <h1 className="text-gray-600 font-semibold mb-6 text-lg">
+<<<<<<< HEAD
           Items found in the &quot;{categoryName}&quot; category
+=======
+     Items found in the &quot;{categoryName}&quot; category
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         </h1>
       )}
 
       {error ? (
+<<<<<<< HEAD
         <ErrorMessage message={error} />
       ) : (
         <div className='flex flex-col gap-3'>
@@ -358,6 +410,154 @@ const productIds = res.data.data
               );
             })}
           </div>
+=======
+      <ErrorMessage message={error} />
+      ) : (
+        <div className='flex flex-col gap-3'>
+        <div>
+          <Slider />
+        </div>
+        <hr className="h-px bg-gray-200 border-0 my-6" />
+    {products.length === 0 && (
+  <div className="flex flex-col items-center justify-center min-h-screen px-4">
+    <h1 className="text-5xl font-bold text-yellow-600 mb-4">No Products Found</h1>
+    <p className="text-lg text-gray-700 mb-3 text-center max-w-md">
+      There are currently no products available. Please check back soon.
+    </p>
+  </div>
+)}
+
+              
+        <div className="grid bg-transparent  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {products.map((product: ProductInterface) => {
+            const productId = product._id;
+            const averageRating = parseFloat(getAverageRating(productId));
+            const isOutOfStock = product.countInStock <= 0;
+
+            return (
+              <div
+                key={product._id}
+
+                className="group relative bg-transparent rounded-xl border border-gray-100 shadow-sm overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-gray-200"
+              >
+                {isOutOfStock && (
+                  <div className="absolute top-4 right-4 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+                    OUT OF STOCK
+                  </div>
+                )}
+
+                {/* Product Image */}
+                <div
+                  onClick={() =>
+             
+                    router.push(`/buyer/order?query=${btoa(JSON.stringify({ productId: product._id, price: product.price, stock: product.countInStock, rating: averageRating }))}`)
+                  } 
+                  className="relative pt-[75%] overflow-hidden">
+                  <Image
+                    className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    src={product.image}
+                    alt={product.title}
+                    width={400}
+                    height={300}
+                  />
+                </div>
+
+                {/* Product Info */}
+                <div className="p-5">
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <h2 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">
+                        {product.title}
+                      </h2>
+                      <p className="text-sm text-gray-500">{product.brand}</p>
+                    </div>
+                    <span className={`text-xl font-bold ${isOutOfStock ? 'text-gray-400' : 'text-emerald-600'}`}>
+                      PKR{' '}{product.price}
+                    </span>
+                  </div>
+
+                  <p className="mt-3 text-gray-600 text-sm line-clamp-2 leading-relaxed">
+                    {product.description}
+                  </p>
+
+                  {/* Rating and Stock */}
+                  <div className="mt-4 flex flex-col gap-2">
+                    <div className="flex items-center">
+                      <div className="flex mr-2">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`text-lg ${star <= Math.round(averageRating) ? "text-amber-400" : "text-gray-300"}`}
+                          >
+                            ★
+                          </span>
+                        ))}
+
+                      </div>
+
+                      <span className="text-gray-700 text-sm font-medium">
+                        ({averageRating.toFixed(1)})
+                      </span>
+                    </div>
+                    {
+                      favProductsIds.includes(product._id)
+                        ?
+                        <button
+                          onClick={() => removeFavHandler(product._id)}
+
+                         className="text-red-500 hover:text-red-700">
+
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                          </svg>
+
+
+                        </button>
+                        :
+
+                        <button
+                          onClick={() => addToFavHandler(product._id)}
+                          className="text-red-500 hover:text-red-700">
+
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                          </svg>
+
+                        </button>
+                    }
+
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center">
+                        <div className={`w-3 h-3 rounded-full mr-2 ${isOutOfStock ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
+                        <span className={`text-sm font-medium ${isOutOfStock ? 'text-rose-600' : 'text-emerald-600'}`}>
+                          {isOutOfStock ? 'Out of Stock' : `${product.countInStock} Available`}
+                        </span>
+                      </div>
+                      <button
+                        className="text-sm relative z-70  font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+                        onClick={() => {
+                          setSelectedProductId(product._id)
+                          setShowAddTocart((prev) => !prev)
+                        }}
+                      >
+                        + Quick Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                {
+                  showAddTocart && selectedProductId === product._id &&
+                  <div className='z-70'>
+
+                    <AddToCartComponent product={product} setShowAddTocart={setShowAddTocart} />
+                  </div>
+                }
+
+              </div>
+            );
+          })}
+        </div>
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         </div>
       )}
     </div>

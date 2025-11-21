@@ -18,22 +18,33 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.20.3",
     "cloudinary": "^2.5.1",
+<<<<<<< HEAD
     "connect-mongo": "^5.1.0",
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "dns": "^0.1.2",
+<<<<<<< HEAD
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-session": "^1.18.2",
+=======
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.12.0",
     "mongoose": "^8.9.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^7.0.10",
+<<<<<<< HEAD
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     "twilio": "^5.4.0"
   },
   "devDependencies": {

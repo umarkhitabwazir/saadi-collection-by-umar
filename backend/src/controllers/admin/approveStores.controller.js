@@ -30,13 +30,21 @@ export const approveStore = async (req, res, next) => {
     if (!store) throw new ApiError(404, "Store not found")
 
     store.status = "approved"
+<<<<<<< HEAD
     await store.save()
+=======
+    await store.save({ validateBeforeSave: false })
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     // check if user already exists
     const existingUser = await User.findOne({ email: store.email })
 
     if (existingUser) {
       await User.updateOne(
         { email: store.email },
+<<<<<<< HEAD
+=======
+        { phone: store.phone },
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         {
           $set: {
             role: "seller",

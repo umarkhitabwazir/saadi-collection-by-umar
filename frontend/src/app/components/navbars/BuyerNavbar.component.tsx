@@ -42,7 +42,11 @@ const BuyerNavbarComponent = () => {
 
 
     useEffect(() => {
+<<<<<<< HEAD
 console.log('user',user)
+=======
+
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         if (searchResultParam) {
             setSearchInput(searchResultParam)
         }
@@ -293,7 +297,10 @@ console.log('user',user)
                                                 className="flex items-center justify-center absolute right-2 top-3 text-gray-200 hover:text-white rounded-lg"
 
                                             >
+<<<<<<< HEAD
                                                 
+=======
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     className={`h-4 w-4 transition-transform ${userActionOpen ? "rotate-180" : "rotate-0"}`}
@@ -318,12 +325,21 @@ console.log('user',user)
                                             >
                                                 <option
                                                     className="text-gray-400"
+<<<<<<< HEAD
                                                    
                                                 >
                                                     
                                                     {user ? user.email?.split('@')[0] : "Account"}
                                                 </option>
                                                
+=======
+                                                    value={user?.email?.split('@')[0]}
+                                                    disabled
+                                                    hidden
+                                                >
+                                                    {user ? user.email?.split('@')[0] : "Account"}
+                                                </option>
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
                                                 <option value="sign-up">Sign Up</option>
                                                 <option className={`${!user ? "hidden" : ""}`} value="log-out">
                                                     Log Out
@@ -502,7 +518,13 @@ console.log('user',user)
                                         >
                                             <option
                                                 className="text-gray-400"
+<<<<<<< HEAD
                                                 
+=======
+                                                value={user?.email?.split('@')[0]}
+                                                disabled
+                                                hidden
+>>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
                                             >
                                                 {user ? user.email?.split('@')[0] : "Account"}
                                             </option>
