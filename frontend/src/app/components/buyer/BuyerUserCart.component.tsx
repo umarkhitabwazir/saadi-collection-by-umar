@@ -15,10 +15,10 @@ const GetUserCartComponent = () => {
   const [productIdsAndQtyArr, setProductIdsAndQtyArr] = useState<
     { productId: string; quantity: number }[]
   >([]);
-    const [savedAddress, setSavedAddress] = useState<boolean>(false)
+  const [savedAddress, setSavedAddress] = useState<boolean>(false)
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  
+
 
   const router = useRouter();
 
@@ -29,37 +29,37 @@ const GetUserCartComponent = () => {
         : [...prev, itemId]
     );
   };
-    const getAddress = async () => {
-  
-      try {
-        const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true })
-        if (res.data.success) {
-          setSavedAddress(true)
-    
-        }
-  
-  
-      } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-  
-          if (!error.response?.data.success) {
-            setSavedAddress(false)
-  
-          }
-        }
-  
+  const getAddress = async () => {
+
+    try {
+      const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true })
+      if (res.data.success) {
+        setSavedAddress(true)
+
       }
-    };
-    useEffect(() => {
-      getAddress()
-    }, []);
+
+
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+
+        if (!error.response?.data.success) {
+          setSavedAddress(false)
+
+        }
+      }
+
+    }
+  };
+  useEffect(() => {
+    getAddress()
+  }, []);
 
   const proceedHandler = () => {
-    
+
     if (price > 0 && productIdsAndQtyArr.length > 0) {
       if (!savedAddress) {
         alert("Please add a shipping address before proceeding to checkout.");
-              return;
+        return;
       }
 
       router.push(
@@ -91,7 +91,7 @@ const GetUserCartComponent = () => {
     const removeDeletedProducts = userCart.filter((cart: { deleted: boolean }) => !cart.deleted)
     const productIdsAndQty = removeDeletedProducts.flatMap((cart: CartDataInterface) =>
       cart.cartItems.map((p: CartItemInterface) => ({
-        productId: p.product._id,
+        productId: p.product?._id,
         quantity: p.quantity,
       }))
     );
@@ -104,7 +104,7 @@ const GetUserCartComponent = () => {
     const total = removeDeletedProducts
       .flatMap((cart: CartDataInterface) =>
         cart.cartItems.filter((item: CartItemInterface) =>
-          selectedItemsIds.includes(item.product._id)
+          selectedItemsIds.includes(item.product?._id)
         )
       )
       .reduce((sum: number, item: CartItemInterface) => sum + item.price, 0);
@@ -146,95 +146,101 @@ const GetUserCartComponent = () => {
         <div className="flex flex-col">
 
 
-        <div className="animate-fadeIn   ">
-          {userCart.map((cart: CartDataInterface) => (
-            <div key={cart._id}
-              className={`
+          <div className="animate-fadeIn   ">
+            {userCart.map((cart: CartDataInterface) => (
+              <div key={cart._id}
+                className={`
                 ${cart.deleted
-                  ? "bg-red-100 border border-red-400"
-                  : 'bg-purple-50'}   rounded-xl p-4 mb-4`}>
+                    ? "bg-red-100 border "
+                    : 'bg-purple-50'}   rounded-xl p-4 mb-4`}>
 
-              {
-                cart.deleted
-                  ?
-                  (
-                    <div className="flex items-center justify-between h-20 px-4 ">
-                      <p className="text-sm font-medium text-red-700">
-                        This item is no longer available in your cart.
-                      </p>
-                      <button
-                        onClick={() => removeCartHandler(cart._id)}
-                        className="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors">
-                        Remove
-                      </button>
-                    </div>
-
-                  )
-                  :
-                  cart.cartItems.map((cartItem: CartItemInterface) => (
-                    <div
-                      key={cartItem._id}
-                      className="flex justify-between  flex-wrap items-center gap-3 border-b border-gray-200 "
-                    >
-                      <input
-                        checked={selectedItemsIds.length !== 0 && selectedItemsIds.includes(cartItem.product._id)}
-                        onChange={() =>
-                          handleCheckboxChange(cartItem.product._id)
-                        }
-                        className="w-5 h-5 mr-4 cursor-pointer"
-                        type="checkbox"
-                      />
-                      <Image
-                      className="md:w-auto w-full h-auto rounded-lg"
-                        src={cartItem.product.image}
-                        width={60}
-                        height={60}
-                        alt="product-img"
-                      />
-                      <div className="ml-4 flex flex-1 flex-col">
-                        <p className="font-medium text-gray-800">
-                          {cartItem.product.title}
+                {
+                  cart.deleted
+                    ?
+                    (
+                      <div className="flex items-center justify-between h-20 px-4 ">
+                        <p className="text-sm font-medium text-red-700">
+                          This item is no longer available in your cart.
                         </p>
-                        <p className="text-gray-600 text-sm">
-                          qty: {cartItem.quantity}
-                        </p>
-                        <p className="text-gray-600 text-sm">
-                          price: PKR{' '}{cartItem.product.price}
-                        </p>
-                      </div>
-                      
-                      <div >
                         <button
                           onClick={() => removeCartHandler(cart._id)}
-                          className="text-sm font-semibold w-full text-red-600 hover:text-red-800 transition-colors">
+                          className="text-sm font-semibold text-red-600 hover:text-red-800 transition-colors">
                           Remove
                         </button>
                       </div>
-                    </div>
-                  ))
-              }
-            </div>
-          ))}
 
-          <div className="mt-6 pt-4 border-t border-gray-200 flex flex-col items-center">
-            <p className="font-medium text-gray-800">
-              Total:{" "}
-              <span className="font-bold text-lg text-purple-700">
-                PKR{' '}{price}
-              </span>
-            </p>
-            <button
-              onClick={proceedHandler}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
-            >
-              PROCEED TO CHECKOUT
-            </button>
-         
+                    )
+                    :
+                    cart.cartItems.map((cartItem: CartItemInterface) => (
+                      <div
+                        key={cartItem._id}
+                        className="flex justify-between  flex-wrap items-center gap-3 border-b border-gray-200 "
+                      >
+                        {cartItem.product && <input
+                          checked={selectedItemsIds.length !== 0 && selectedItemsIds.includes(cartItem.product._id)}
+                          onChange={() =>
+                            handleCheckboxChange(cartItem.product._id)
+                          }
+                          className="w-5 h-5 mr-4 cursor-pointer"
+                          type="checkbox"
+                        />}
+                        {cartItem.product
+                          &&
+                          <>
+
+                            <Image
+                              className="md:w-auto w-full h-auto rounded-lg"
+                              src={cartItem.product.image}
+                              width={60}
+                              height={60}
+                              alt="product-img"
+                            />
+                            <div className="ml-4 flex flex-1 flex-col">
+                              <p className="font-medium text-gray-800">
+                                {cartItem.product.title}
+                              </p>
+                              <p className="text-gray-600 text-sm">
+                                qty: {cartItem.quantity}
+                              </p>
+                              <p className="text-gray-600 text-sm">
+                                price: PKR{' '}{cartItem.product.price}
+                              </p>
+                            </div>
+                          </>
+  
+                        }
+                        <div >
+                          <button
+                            onClick={() => removeCartHandler(cart._id)}
+                            className="text-sm font-semibold w-full text-red-600 hover:text-red-800 transition-colors">
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                }
+              </div>
+            ))}
+
+            <div className="mt-6 pt-4 border-t border-gray-200 flex flex-col items-center">
+              <p className="font-medium text-gray-800">
+                Total:{" "}
+                <span className="font-bold text-lg text-purple-700">
+                  PKR{' '}{price}
+                </span>
+              </p>
+              <button
+                onClick={proceedHandler}
+                className="bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+              >
+                PROCEED TO CHECKOUT
+              </button>
+
+            </div>
           </div>
-        </div>
           <div >
-    <AddressComponent />
-  </div>
+            <AddressComponent />
+          </div>
         </div>
       )}
     </>

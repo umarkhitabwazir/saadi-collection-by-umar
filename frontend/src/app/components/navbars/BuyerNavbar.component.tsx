@@ -42,7 +42,7 @@ const BuyerNavbarComponent = () => {
 
 
     useEffect(() => {
-
+console.log('user',user)
         if (searchResultParam) {
             setSearchInput(searchResultParam)
         }
@@ -293,6 +293,7 @@ const BuyerNavbarComponent = () => {
                                                 className="flex items-center justify-center absolute right-2 top-3 text-gray-200 hover:text-white rounded-lg"
 
                                             >
+                                                
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     className={`h-4 w-4 transition-transform ${userActionOpen ? "rotate-180" : "rotate-0"}`}
@@ -317,12 +318,12 @@ const BuyerNavbarComponent = () => {
                                             >
                                                 <option
                                                     className="text-gray-400"
-                                                    value={user?.email?.split('@')[0]}
-                                                    disabled
-                                                    hidden
+                                                   
                                                 >
+                                                    
                                                     {user ? user.email?.split('@')[0] : "Account"}
                                                 </option>
+                                               
                                                 <option value="sign-up">Sign Up</option>
                                                 <option className={`${!user ? "hidden" : ""}`} value="log-out">
                                                     Log Out
@@ -501,9 +502,7 @@ const BuyerNavbarComponent = () => {
                                         >
                                             <option
                                                 className="text-gray-400"
-                                                value={user?.email?.split('@')[0]}
-                                                disabled
-                                                hidden
+                                                
                                             >
                                                 {user ? user.email?.split('@')[0] : "Account"}
                                             </option>

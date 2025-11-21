@@ -35,11 +35,13 @@ const SellerOrdersComponent = () => {
     try {
       const response = await axios.get(`${API_URL}/seller/get-ordered-products`, { withCredentials: true })
       const data = await response.data.data
+      console.log("data",data)
       setAdminOrders(data)
       setLoading(false)
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+      setLoading(false)
 
         const notLoggedIn = error.response?.data.error === 'Unauthorized'
         if (notLoggedIn) {
@@ -382,7 +384,7 @@ const SellerOrdersComponent = () => {
                       <h4 className="text-md font-semibold text-gray-700 mb-4 pb-2 border-b">Products</h4>
                       <div className="space-y-4">
                         {order.products.map((p) => (
-                          <div key={p.productId._id} className="flex flex-wrap items-start gap-3">
+                         p.productId ? <div key={p.productId._id} className="flex flex-wrap items-start gap-3">
 
                             <div className="bg-gray-100 border rounded-md overflow-hidden">
                               <Image
@@ -401,6 +403,11 @@ const SellerOrdersComponent = () => {
                               </div>
                             </div>
                           </div>
+                          :
+                       <div key={order._id} className="p-4 bg-red-50 text-red-700 rounded-md ">
+  Product was deleted. 
+</div>
+
                         ))}
                       </div>
                     </div>

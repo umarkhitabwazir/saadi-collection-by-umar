@@ -13,7 +13,7 @@ const userSchema = new Schema(
             required: [true, "username is required"],
             lowercase: true,
             trim: true,
-            
+
         },
         email: {
             type: String,
@@ -22,10 +22,17 @@ const userSchema = new Schema(
             lowecase: true,
             trim: true,
         },
+        googleId: {
+            type: String,
+            unique: true,
+            default: '',
+        },
         phone: {
             type: String,
-            required: [true, "phone is required"],
             trim: true,
+            required: function () {
+                return !this.googleId; 
+            }
         },
         role: {
             type: String,
@@ -33,11 +40,13 @@ const userSchema = new Schema(
             enum: ["buyer", "seller", "super-admin"],
             default: "buyer"
         },
-       
+
         password: {
-            type: String,
-            required: [true, "password is required"],
+            type: String,            
             trim: true,
+               required: function () {
+                return !this.googleId; 
+            }
         },
         passwordResetCode: {
             type: Number,
@@ -58,10 +67,10 @@ const userSchema = new Schema(
             default: false
         },
         status: {
-  type: String,
-  enum: ["pending", "approved", "blocked", "suspended"],
-  default: "pending",
-}
+            type: String,
+            enum: ["pending", "approved", "blocked", "suspended"],
+            default: "pending",
+        }
 
 
     }, { timestamps: true }

@@ -18,6 +18,10 @@ import { contactUsRouter } from "./routes/contactUs.route.js";
 import webhookRouter from "./routes/pyment/webhook.routes.js";
 import { adminRoutes } from "./routes/adminRoutes/admin.routes.js";
 import userPaymentRouter from "./routes/userPayment.route.js";
+import passport from "./passport.js"
+import passportRouter from "./routes/passport.route.js";
+import MongoStore from "connect-mongo"
+import session from "express-session";
 const app = express()
 app.use(
   cors({
@@ -92,7 +96,27 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET, 
+        resave: false,
+        saveUninitialized: true,
+        store: MongoStore.create({
+            mongoUrl: process.env.DB_URL,
+            collectionName: "sessions",
+    }),
+        cookie: { 
+            secure: process.env.NODE_ENV==='production',
+            httpOnly: true,
+             sameSite: "lax",
+             
+            }, 
+    })
+);
 app.use(cookieParser());
+app.use(passport.initialize())
+app.use(passport.session())
+app.use('/api/v2/auth', passportRouter)
 app.use("/api/v2",
   adminRoutes,
      userRouter,

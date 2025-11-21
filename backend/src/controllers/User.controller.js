@@ -10,7 +10,7 @@ dotenv.config({
     path: ".env"
 })
 
-const generateAccessAndRefereshTokens = async (userId) => {
+export const generateAccessAndRefereshTokens = async (userId) => {
     try {
 
         const user = await User.findById(userId)
@@ -150,6 +150,10 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
         if (!user) {
             throw new ApiError(404, "User not found,Please Signup")
+        }
+        if (user.googleId) {
+            throw new ApiError(400, "This account only supports Google login. Use Google to continue.")
+            
         }
         const isMatch = await user.comparePassword(password)
         if (!isMatch) {
