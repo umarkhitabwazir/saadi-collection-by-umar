@@ -41,13 +41,7 @@ setTimeout(()=>(
       <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
         Request to Open a Store
       </h2>
-      {
-        error &&
-        <div className="flex justify-center items-center">
-
-          <p className="text-red-500 font-light">error:{error}</p>
-        </div>
-      }
+   
 
       <div className="w-auto max-w-lg mx-auto">
 
@@ -140,6 +134,13 @@ setTimeout(()=>(
         >
           Submit Request
         </button>
+           {
+        error &&
+        <div className="flex justify-center items-center">
+
+          <p className="text-red-500 font-light">error:{error}</p>
+        </div>
+      }
 
       </div>
     </form>

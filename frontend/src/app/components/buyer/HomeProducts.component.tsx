@@ -1,13 +1,8 @@
 "use client";
 
-<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
-=======
-import React, {  useEffect, useState } from 'react';
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 import axios, { AxiosError } from 'axios';
-import { useRouter } from 'next/navigation';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ProductInterface } from '../../utils/productsInterface';
 import Loading from '../Loading.component';
@@ -19,49 +14,41 @@ import { useFetchData } from '@/app/utils/useFetchData';
 
 const Products = () => {
   const [sort, setSort] = useState<string | null>(null);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<ProductInterface[]>([]);
   const [searchResult, setSearchResult] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [reviews, setReviews] = useState<{ product: string; rating: number }[]>([]);
+  const [showAddTocart, setShowAddTocart] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [favProductsIds, setFavProductsIds] = useState<string[]>([]);
+
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   const routePath = usePathname();
   const searchParams = useSearchParams();
   const params = new URLSearchParams(searchParams.toString());
-  const searchedProducts = searchParams.get("search")
-  const categoryName = searchParams.get("category")
-  const [showAddTocart, setShowAddTocart] = useState<boolean>(false)
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null)
-  const [favProductsIds, setFavProductsIds] = useState<string[]>([])
+  const searchedProducts = searchParams.get("search");
+  const categoryName = searchParams.get("category");
   const value = searchParams.get("sort");
   const favIdInParams = searchParams.get("favId");
 
-
-<<<<<<< HEAD
   const { fetchData } = useFetchData(setLoading);
-=======
-const { fetchData } = useFetchData(setLoading);
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-
   useEffect(() => {
     if (value) {
       setSort(value);
-      if (routePath !== "/") {
-        router.push("/");
-      }
-    } else {
-      setSort(null);
-    }
+      if (routePath !== "/") router.push("/");
+    } else setSort(null);
   }, [value, routePath, router]);
 
   const fetchProducts = async () => {
     try {
-      const endpoint = await sort ? `${API_URL}/${sort}` : `${API_URL}/get-products`;
+      const endpoint = sort ? `${API_URL}/${sort}` : `${API_URL}/get-products`;
       const response = await axios.get(endpoint);
       setProducts(response.data.data);
       setError(null);
@@ -71,206 +58,120 @@ const { fetchData } = useFetchData(setLoading);
       }
     }
   };
+
   const fetchSearchedProducts = async () => {
     try {
       const response = await axios.get(`${API_URL}/search-products?search=${searchedProducts}`);
-<<<<<<< HEAD
       setProducts(response.data.data);
-=======
-         setProducts(response.data.data);
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
       setSearchResult(response.data.data.length);
       setError(null);
     } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        setError(err.message || "An error occurred while fetching products.");
-      }
+      if (err instanceof AxiosError) setError(err.message || "An error occurred while fetching products.");
     }
-  }
-  // Fetch products
+  };
+
   useEffect(() => {
-    // get searched products
     if (searchedProducts) {
       fetchSearchedProducts();
     }
+    if (!searchedProducts && !categoryName) fetchProducts();
+  }, [API_URL, sort, searchedProducts, categoryName]);
 
-<<<<<<< HEAD
-    if (!searchedProducts && !categoryName) {
-
-      fetchProducts();
-    }
-=======
-if (!searchedProducts && !categoryName){
-
-  fetchProducts();
-}
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
-
-  }, [API_URL, sort, searchedProducts]);
   const fetchAllReviews = async () => {
     try {
       const res = await axios.get(`${API_URL}/get-all-reviews`);
       setReviews(res.data.data);
     } catch (error: unknown) {
-      if (error instanceof AxiosError && error.code === "ERR_NETWORK") {
-        return;
+      if (error instanceof AxiosError && error.code === "ERR_NETWORK") return;
+    }
+  };
+
+  useEffect(() => {
+    fetchAllReviews();
+  }, [API_URL]);
+
+  const getFavProducts = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/get-fav-product`, { withCredentials: true });
+      const productIds = res.data.data
+        .map((fav: FavInterface) => fav.item?._id)
+        .filter((id: string): id is string => Boolean(id));
+      setFavProductsIds(productIds);
+    } catch {}
+  };
+
+  useEffect(() => {
+    getFavProducts();
+  }, []);
+
+  const categoryBaseProducts = async () => {
+    if (!categoryName) return;
+    try {
+      setError(null);
+      const res = await axios.post(`${API_URL}/find-Category-Products?category=${encodeURIComponent(categoryName)}`);
+      setProducts(res.data.data);
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        setError(error.response?.data.error || "An error occurred while fetching products.");
       }
     }
   };
-  // Fetch all reviews
+
   useEffect(() => {
-    fetchAllReviews();
-  }, [API_URL, setReviews]);
+    if (categoryName) categoryBaseProducts();
+  }, [API_URL, categoryName]);
 
-  // get FavouriteProducts
-  const getFavProducts = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/get-fav-product`, { withCredentials: true })
-<<<<<<< HEAD
-const productIds = res.data.data
-  .map((fav: FavInterface) => fav.item?._id)
-  .filter((id:string): id is string => Boolean(id));
-
-=======
-
-      const productIds = res.data.data.map((fav: FavInterface) => fav.item._id)
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
-      setFavProductsIds(productIds)
-
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-<<<<<<< HEAD
-        console.log(error.code)
-=======
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
-      }
-    }
-  }
-  useEffect(() => {
-    getFavProducts()
-  }, [])
-  const categoryBaseProducts = async () => {
-    try {
-      setError(null)
-      if (!categoryName) {
-        return;
-      }
-      const res = await axios.post(`${API_URL}/find-Category-Products?category=${encodeURIComponent(categoryName)}`)
-      setProducts(res.data.data)
-
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
-        setError(error.response?.data.error || "An error occurred while fetching products.");
-      }
-      if (error) {
-        return null
-      }
-    }
-  }
-  // fetch category base products 
-  useEffect(() => {
-    if (categoryName) {
-      categoryBaseProducts()
-    }
-  }, [API_URL, categoryName])
-
-  // Calculate average rating for each product
   const getAverageRating = (productId: string) => {
     const productReviews = reviews.filter(review => review.product === productId);
-    if (productReviews.length === 0) return "0";
-
+    if (!productReviews.length) return "0";
     const sum = productReviews.reduce((acc, review) => acc + review.rating, 0);
     return (sum / productReviews.length).toFixed(1);
   };
 
   const addToFavHandler = async (productId: string) => {
-
     try {
-      await axios.post(`${API_URL}/add-to-fav/${productId}`, {}, { withCredentials: true })
-      if (favIdInParams) {
-        alert('✅product added to favorite successfully')
-      }
-      fetchProducts()
-      getFavProducts()
+      await axios.post(`${API_URL}/add-to-fav/${productId}`, {}, { withCredentials: true });
+      if (favIdInParams) alert('✅ Product added to favorite successfully');
+      fetchProducts();
+      getFavProducts();
     } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-<<<<<<< HEAD
-        if (error.response?.status === 401) {
-=======
-        if (error.response?.status===401) {
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
-          router.push(`/login?favId=${productId}`)
-        }
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        router.push(`/login?favId=${productId}`);
       }
     }
-  }
-<<<<<<< HEAD
+  };
+
   const removeFavHandler = async (productId: string) => {
     try {
-      await axios.delete(`${API_URL}/remove-fav/${productId}`, { withCredentials: true })
-      await getFavProducts()
+      await axios.delete(`${API_URL}/remove-fav/${productId}`, { withCredentials: true });
+      getFavProducts();
+    } catch {}
+  };
 
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-      }
-    }
-=======
-  const removeFavHandler=async(productId:string)=>{
-try {
-      await axios.delete(`${API_URL}/remove-fav/${productId}`,  { withCredentials: true })
-      await getFavProducts()
-  
-} catch (error:unknown) {
-  if (error instanceof AxiosError) {
-  }
-}
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
-  }
   useEffect(() => {
     if (favIdInParams) {
-
-      addToFavHandler(favIdInParams)
+      addToFavHandler(favIdInParams);
       setTimeout(() => {
-
         params.delete("favId");
         router.replace(`?${params.toString()}`);
-      }, 3000)
+      }, 3000);
     }
-  }, [favIdInParams])
-  return (
+  }, [favIdInParams]);
 
-    <div className=" px-6 py-10">
+  return (
+    <div className="px-6 py-10">
       {loading && <Loading />}
 
-      {searchedProducts && (
-        <h1 className="text-gray-600 font-semibold mb-6 text-lg">
-          {searchResult} items found for &quot;{searchedProducts}&quot;
-        </h1>
-      )}
-      {categoryName && (
-        <h1 className="text-gray-600 font-semibold mb-6 text-lg">
-<<<<<<< HEAD
-          Items found in the &quot;{categoryName}&quot; category
-=======
-     Items found in the &quot;{categoryName}&quot; category
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
-        </h1>
-      )}
+      {searchedProducts && <h1 className="text-gray-600 font-semibold mb-6 text-lg">{searchResult} items found for "{searchedProducts}"</h1>}
+      {categoryName && <h1 className="text-gray-600 font-semibold mb-6 text-lg">Items found in the "{categoryName}" category</h1>}
 
       {error ? (
-<<<<<<< HEAD
         <ErrorMessage message={error} />
       ) : (
-        <div className='flex flex-col gap-3'>
-          <div>
-            <Slider />
-          </div>
+        <div className="flex flex-col gap-3">
+          <Slider />
           <hr className="h-px bg-gray-200 border-0 my-6" />
+
           {products.length === 0 && (
             <div className="flex flex-col items-center justify-center min-h-screen px-4">
               <h1 className="text-5xl font-bold text-yellow-600 mb-4">No Products Found</h1>
@@ -280,32 +181,24 @@ try {
             </div>
           )}
 
-
-          <div className="grid bg-transparent  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid bg-transparent grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {products.map((product: ProductInterface) => {
               const productId = product._id;
               const averageRating = parseFloat(getAverageRating(productId));
               const isOutOfStock = product.countInStock <= 0;
 
               return (
-                <div
-                  key={product._id}
-
-                  className="group relative bg-transparent rounded-xl border border-gray-100 shadow-sm overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-gray-200"
-                >
+                <div key={product._id} className="group relative bg-transparent rounded-xl border border-gray-100 shadow-sm overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-gray-200">
                   {isOutOfStock && (
-                    <div className="absolute top-4 right-4 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-                      OUT OF STOCK
-                    </div>
+                    <div className="absolute top-4 right-4 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">OUT OF STOCK</div>
                   )}
 
-                  {/* Product Image */}
                   <div
                     onClick={() =>
-
-                      router.push(`/buyer/order?query=${btoa(JSON.stringify({ productId: product._id, price: product.price, stock: product.countInStock, rating: averageRating }))}`)
+                      router.push(`/buyer/order?query=${btoa(JSON.stringify({ productId, price: product.price, stock: product.countInStock, rating: averageRating }))}`)
                     }
-                    className="relative pt-[75%] overflow-hidden">
+                    className="relative pt-[75%] overflow-hidden"
+                  >
                     <Image
                       className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                       src={product.image}
@@ -315,69 +208,40 @@ try {
                     />
                   </div>
 
-                  {/* Product Info */}
                   <div className="p-5">
                     <div className="flex justify-between items-start gap-2">
                       <div>
-                        <h2 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">
-                          {product.title}
-                        </h2>
+                        <h2 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">{product.title}</h2>
                         <p className="text-sm text-gray-500">{product.brand}</p>
                       </div>
-                      <span className={`text-xl font-bold ${isOutOfStock ? 'text-gray-400' : 'text-emerald-600'}`}>
-                        PKR{' '}{product.price}
-                      </span>
+                      <span className={`text-xl font-bold ${isOutOfStock ? 'text-gray-400' : 'text-emerald-600'}`}>PKR {product.price}</span>
                     </div>
 
-                    <p className="mt-3 text-gray-600 text-sm line-clamp-2 leading-relaxed">
-                      {product.description}
-                    </p>
+                    <p className="mt-3 text-gray-600 text-sm line-clamp-2 leading-relaxed">{product.description}</p>
 
-                    {/* Rating and Stock */}
                     <div className="mt-4 flex flex-col gap-2">
                       <div className="flex items-center">
                         <div className="flex mr-2">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <span
-                              key={star}
-                              className={`text-lg ${star <= Math.round(averageRating) ? "text-amber-400" : "text-gray-300"}`}
-                            >
-                              ★
-                            </span>
+                          {[1, 2, 3, 4, 5].map(star => (
+                            <span key={star} className={`text-lg ${star <= Math.round(averageRating) ? "text-amber-400" : "text-gray-300"}`}>★</span>
                           ))}
-
                         </div>
-
-                        <span className="text-gray-700 text-sm font-medium">
-                          ({averageRating.toFixed(1)})
-                        </span>
+                        <span className="text-gray-700 text-sm font-medium">({averageRating.toFixed(1)})</span>
                       </div>
-                      {
-                        favProductsIds.includes(product._id)
-                          ?
-                          <button
-                            onClick={() => removeFavHandler(product._id)}
 
-                            className="text-red-500 hover:text-red-700">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                            </svg>
-
-
-                          </button>
-                          :
-
-                          <button
-                            onClick={() => addToFavHandler(product._id)}
-                            className="text-red-500 hover:text-red-700">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                            </svg>
-
-                          </button>
-                      }
+                      {favProductsIds.includes(product._id) ? (
+                        <button onClick={() => removeFavHandler(product._id)} className="text-red-500 w-36 hover:text-red-700">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      ) : (
+                        <button onClick={() => addToFavHandler(product._id)} className="text-red-500 w-36 hover:text-red-700">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      )}
 
                       <div className="flex justify-between items-center">
                         <div className="flex items-center">
@@ -387,10 +251,10 @@ try {
                           </span>
                         </div>
                         <button
-                          className="text-sm relative z-70  font-semibold text-blue-600 hover:text-blue-800 transition-colors"
+                          className="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors"
                           onClick={() => {
-                            setSelectedProductId(product._id)
-                            setShowAddTocart((prev) => !prev)
+                            setSelectedProductId(product._id);
+                            setShowAddTocart(prev => !prev);
                           }}
                         >
                           + Quick Add
@@ -398,170 +262,17 @@ try {
                       </div>
                     </div>
                   </div>
-                  {
-                    showAddTocart && selectedProductId === product._id &&
-                    <div className='z-70'>
 
-                      <AddToCartComponent product={product} setShowAddTocart={setShowAddTocart} />
-                    </div>
-                  }
-
+                  {showAddTocart && selectedProductId === product._id && (
+                    <AddToCartComponent product={product} setShowAddTocart={setShowAddTocart} />
+                  )}
                 </div>
               );
             })}
           </div>
-=======
-      <ErrorMessage message={error} />
-      ) : (
-        <div className='flex flex-col gap-3'>
-        <div>
-          <Slider />
-        </div>
-        <hr className="h-px bg-gray-200 border-0 my-6" />
-    {products.length === 0 && (
-  <div className="flex flex-col items-center justify-center min-h-screen px-4">
-    <h1 className="text-5xl font-bold text-yellow-600 mb-4">No Products Found</h1>
-    <p className="text-lg text-gray-700 mb-3 text-center max-w-md">
-      There are currently no products available. Please check back soon.
-    </p>
-  </div>
-)}
-
-              
-        <div className="grid bg-transparent  grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product: ProductInterface) => {
-            const productId = product._id;
-            const averageRating = parseFloat(getAverageRating(productId));
-            const isOutOfStock = product.countInStock <= 0;
-
-            return (
-              <div
-                key={product._id}
-
-                className="group relative bg-transparent rounded-xl border border-gray-100 shadow-sm overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg hover:border-gray-200"
-              >
-                {isOutOfStock && (
-                  <div className="absolute top-4 right-4 bg-rose-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">
-                    OUT OF STOCK
-                  </div>
-                )}
-
-                {/* Product Image */}
-                <div
-                  onClick={() =>
-             
-                    router.push(`/buyer/order?query=${btoa(JSON.stringify({ productId: product._id, price: product.price, stock: product.countInStock, rating: averageRating }))}`)
-                  } 
-                  className="relative pt-[75%] overflow-hidden">
-                  <Image
-                    className="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    src={product.image}
-                    alt={product.title}
-                    width={400}
-                    height={300}
-                  />
-                </div>
-
-                {/* Product Info */}
-                <div className="p-5">
-                  <div className="flex justify-between items-start gap-2">
-                    <div>
-                      <h2 className="text-lg font-bold text-gray-900 mb-1 line-clamp-1">
-                        {product.title}
-                      </h2>
-                      <p className="text-sm text-gray-500">{product.brand}</p>
-                    </div>
-                    <span className={`text-xl font-bold ${isOutOfStock ? 'text-gray-400' : 'text-emerald-600'}`}>
-                      PKR{' '}{product.price}
-                    </span>
-                  </div>
-
-                  <p className="mt-3 text-gray-600 text-sm line-clamp-2 leading-relaxed">
-                    {product.description}
-                  </p>
-
-                  {/* Rating and Stock */}
-                  <div className="mt-4 flex flex-col gap-2">
-                    <div className="flex items-center">
-                      <div className="flex mr-2">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <span
-                            key={star}
-                            className={`text-lg ${star <= Math.round(averageRating) ? "text-amber-400" : "text-gray-300"}`}
-                          >
-                            ★
-                          </span>
-                        ))}
-
-                      </div>
-
-                      <span className="text-gray-700 text-sm font-medium">
-                        ({averageRating.toFixed(1)})
-                      </span>
-                    </div>
-                    {
-                      favProductsIds.includes(product._id)
-                        ?
-                        <button
-                          onClick={() => removeFavHandler(product._id)}
-
-                         className="text-red-500 hover:text-red-700">
-
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                          </svg>
-
-
-                        </button>
-                        :
-
-                        <button
-                          onClick={() => addToFavHandler(product._id)}
-                          className="text-red-500 hover:text-red-700">
-
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-                            <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                          </svg>
-
-                        </button>
-                    }
-
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <div className={`w-3 h-3 rounded-full mr-2 ${isOutOfStock ? 'bg-rose-500' : 'bg-emerald-500'}`}></div>
-                        <span className={`text-sm font-medium ${isOutOfStock ? 'text-rose-600' : 'text-emerald-600'}`}>
-                          {isOutOfStock ? 'Out of Stock' : `${product.countInStock} Available`}
-                        </span>
-                      </div>
-                      <button
-                        className="text-sm relative z-70  font-semibold text-blue-600 hover:text-blue-800 transition-colors"
-                        onClick={() => {
-                          setSelectedProductId(product._id)
-                          setShowAddTocart((prev) => !prev)
-                        }}
-                      >
-                        + Quick Add
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                {
-                  showAddTocart && selectedProductId === product._id &&
-                  <div className='z-70'>
-
-                    <AddToCartComponent product={product} setShowAddTocart={setShowAddTocart} />
-                  </div>
-                }
-
-              </div>
-            );
-          })}
-        </div>
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         </div>
       )}
     </div>
-
   );
 };
 

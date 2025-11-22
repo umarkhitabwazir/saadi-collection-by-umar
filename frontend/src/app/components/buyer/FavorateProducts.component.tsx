@@ -24,10 +24,6 @@ const FavouriteProductsComponent = () => {
     getFavProducts()
   }, [])
   const removeFavHandler = async (productId: string) => {
-<<<<<<< HEAD
-
-=======
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     try {
       await axios.delete(`${API_URL}/remove-fav/${productId}`, { withCredentials: true })
       await getFavProducts()
@@ -57,108 +53,107 @@ const FavouriteProductsComponent = () => {
             <div
               key={fav._id}
 
-              className="bg-transparent border flex flex-wrap flex-col gap-3 rounded-xl p-4">
-              <div
-<<<<<<< HEAD
-                className='cursor-pointer'
-                onClick={() => {
-                  if (!fav.item) {
-                    return ;
-                  }
-                  router.push(`/buyer/order?query=${btoa(JSON.stringify({ productId: fav.item._id, p: fav.item.price, stock: fav.item.countInStock, rating: fav.item.rating }))}`)
-                }
-                }
-              >
-                {fav.item ?
+              className="bg-transparent  border flex flex-wrap flex-col gap-3 rounded-xl p-4">
 
-                  <div className='flex   justify-between  gap-2'>
-                    <div >
-
-                      <Image
-                        className='w-auto h-auto bg-transparent'
-                        src={fav.item.image}
-                        width={100}
-                        height={100}
-                        alt="fav product img" />
-                      <p className="font-medium text-gray-800">{fav.item.title}</p>
-                      <p className="text-gray-600 text-sm mb-2">{fav.item.description}</p>
-                      <div className="flex justify-between items-center">
-                        <span className="font-bold text-gray-900">{fav.item.price}</span>
-                      </div>
-                    </div>
-                    <div>
-
-                      <button
-                        onClick={() => removeFavHandler(fav.item._id)}
-                        className="text-red-500 hover:text-red-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
-                  </div>
-                  :
-                <div 
-  key={fav._id} 
-  className="p-4 bg-amber-50 rounded-lg flex flex-col items-center text-gray-400  "
+              {fav.item ?
+                <>
+                <div
+  className=" cursor-pointer bg-white rounded-2xl shadow-sm hover:shadow-xl  border border-gray-100 "
+  onClick={() =>
+    router.push(`/buyer/order?query=${btoa(JSON.stringify({ 
+      productId: fav.item._id, 
+      p: fav.item.price, 
+      stock: fav.item.countInStock, 
+      rating: fav.item.rating 
+    }))}`)
+  }
 >
-  <div className="flex items-center mb-2 w-full justify-center">
-    <svg 
-      className="w-5 h-5 mr-2 flex-shrink-0" 
-      fill="currentColor" 
-      viewBox="0 0 20 20"
-    >
-      <path 
-        fillRule="evenodd" 
-        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" 
-        clipRule="evenodd" 
-      />
-    </svg>
-    <p className="text-sm font-medium text-center">
-      This favorite item is no longer available
-    </p>
+  {/* Image Container */}
+  <div className="relative overflow-hidden bg-gray-50">
+    <Image
+      className="w-full h-64 object-cover "
+      width={400}
+      height={400}
+      src={fav.item.image}
+      alt={fav.item.title || "Product image"}
+         />
+    
+
   </div>
-  
-  <button
-    onClick={() => removeFavHandler(fav._id)}
-    className="mt-2 px-4 py-2 bg-white border border-amber-300 text-amber-700 rounded-md text-sm font-medium hover:bg-amber-100 hover:border-amber-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50"
-  >
-    Remove from Favorites
-  </button>
+
+  {/* Content Container */}
+  <div className="p-5">
+    {/* Title */}
+    <h3 className="font-semibold text-gray-900 text-lg mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors duration-200">
+      {fav.item.title}
+    </h3>
+
+    {/* Description */}
+    <p className="text-gray-600 text-sm mb-4 line-clamp-2 leading-relaxed">
+      {fav.item.description}
+    </p>
+
+    {/* Price & Info Row */}
+    <div className="flex items-center justify-between">
+      <div className="flex items-center gap-3">
+        {/* Price */}
+        <span className="text-2xl font-bold text-gray-900">
+          ${typeof fav.item.price === 'number' ? fav.item.price.toFixed(2) : fav.item.price}
+        </span>
+        
+        {/* Stock Status */}
+        {fav.item.countInStock > 0 ? (
+          <span className="text-xs font-medium bg-green-100 text-green-700 px-2 py-1 rounded-full">
+            In Stock
+          </span>
+        ) : (
+          <span className="text-xs font-medium bg-red-100 text-red-700 px-2 py-1 rounded-full">
+            Out of Stock
+          </span>
+        )}
+      </div>
+
+   
+    </div>
+
+    {/* Additional Info */}
+    <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+      <span>Free shipping</span>
+      <span>15-day returns</span>
+    </div>
+  </div>
+
+  {/* Hover Border Effect */}
+  <div className="absolute inset-0 border-2 border-transparent group-hover:border-blue-200 rounded-2xl pointer-events-none transition-all duration-300" />
+                  <button
+                    onClick={() => removeFavHandler(fav.item._id)}
+                    className="text-red-500 w-32 hover:text-red-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+                    </svg>
+                  </button>
 </div>
-                }
+                </>
+                :
+                  <div key={fav._id} className="text-center py-8">
+      <div className="w-16 h-16 bg-gray-100 rounded-full flex flex-wrap items-center justify-center mx-auto space-y-4 mb-4">
+        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </div>
+      <p className="text-gray-500 text-sm">
+      No favorite product found. The product was removed. 
+      </p>
+   <button
+  onClick={() => removeFavHandler(fav._id)}
+  className="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-red-600 active:bg-red-700"
+>
+  Remove
+</button>
 
+    </div>
+              }
 
-              </div>
-
-
-=======
-              className='cursor-pointer'
-                onClick={() =>
-                  router.push(`/buyer/order?query=${btoa(JSON.stringify({ productId: fav.item._id, p: fav.item.price, stock: fav.item.countInStock, rating: fav.item.rating }))}`)
-
-                }
-              >
-                <Image
-                  className='w-auto h-auto bg-transparent'
-                  src={fav.item.image}
-                  width={100}
-                  height={100}
-                  alt="fav product img" />
-                <p className="font-medium text-gray-800">{fav.item.title}</p>
-                <p className="text-gray-600 text-sm mb-2">{fav.item.description}</p>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-gray-900">{fav.item.price}</span>
-                </div>
-              </div>
-                <button
-                  onClick={() => removeFavHandler(fav.item._id)}
-                  className="text-red-500 hover:text-red-700">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-                  </svg>
-                </button>
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
             </div>
           ))}
         </div>

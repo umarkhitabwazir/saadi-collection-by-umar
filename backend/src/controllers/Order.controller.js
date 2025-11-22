@@ -115,11 +115,8 @@ const createOrder = asyncHandler(async (req, res) => {
         totalPrice: productTotalPrice + TAX_RATE + SHIPPING_COST,
     });
     const orderedProduct = await Product.find({ _id: { $in: produdsArr.map((productIds) => productIds.productId) } })
-<<<<<<< HEAD
   await  sendEmailOrderPlaced(order, orderedProduct, user.email, user.username)
-=======
     sendEmailOrderPlaced(order, orderedProduct, user.email, user.username)
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     res.status(201).json(new ApiResponse(201, order, "Order created successfully"));
 });
 
@@ -234,11 +231,6 @@ const cancelOrder = asyncHandler(async (req, res) => {
     order.cancelled = true
     await order.save()
     const paymentData=await UserPayment.findOne({userId:user.id})
-<<<<<<< HEAD
-    
-=======
-    console.log('user Id',user.id,'paymentData',paymentData)
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     const orderCancelProducts = order.products.map(p => p.productId);
     const email = order.userId.email;
     const userName = order.userId.username || "Customer";

@@ -31,27 +31,16 @@ const ShippingComponent = () => {
     }
   }, [decoded]);
 
-  const getAddress = async () => {
-
-    try {
-      const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true })
-      if (res.data.success) {
-        setSavedAddress(true)
-
-      }
-
-
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-
-        if (!error.response?.data.success) {
-          setSavedAddress(false)
-
-        }
-      }
-
-    }
-  };
+const getAddress = async (): Promise<boolean> => {
+  try {
+    const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true });
+    const hasAddress = res.data.success
+   return hasAddress;
+  } catch  {
+    
+    return false;
+  }
+};
   useEffect(() => {
     getAddress()
   }, []);
@@ -88,6 +77,8 @@ const ShippingComponent = () => {
 
   const handleProceedPay = async () => {
     setLoading(true)
+const hasAddress = await getAddress();
+
     if (!decoded) {
       setLoading(false)
       alert("Invalid order data. Please try again.");
@@ -102,7 +93,7 @@ const ShippingComponent = () => {
       setLoading(false)
     }, 1000);
 
-    if (!savedAddress) {
+    if (!hasAddress) {
       alert("Please add a shipping address before proceeding to payment.");
       return;
     }

@@ -5,10 +5,7 @@ import { Product } from "../models/Product.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
-<<<<<<< HEAD
 import nodemailer from "nodemailer";
-=======
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 import dotenv from "dotenv";
 import { Category } from "../models/Category.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
@@ -19,17 +16,12 @@ import { Address } from "../models/address.model.js";
 import { sendEmailRefundConfirmation } from "../utils/emailSenders/sendRefundConfirmation.utils.js";
 import { UserPayment } from "../models/UserPayment.model.js";
 import { sendEmailOrderConfirmed } from "../utils/emailSenders/orderConfirmEmailSender.utils.js";
-<<<<<<< HEAD
-=======
-import { orderDeliveredEmailSender } from "../utils/emailSenders/orderDeliveredEmailSender.utils.js";
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
 
 dotenv.config({
     path: ".env"
 })
 
-<<<<<<< HEAD
 const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
@@ -166,9 +158,6 @@ const sendEmail = async (email, image, title, price, subject) => {
         });
     });
 };
-=======
-
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
 
 const sellerProducts = asyncHandler(async (req, res) => {
@@ -352,6 +341,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     }
     let productId = req.params.productid
     let product = await Product.findById(productId)
+const objId = new mongoose.Types.ObjectId(productId)
 
 
 
@@ -359,17 +349,14 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Product not found")
     }
 
-    const existOrder = await Order.findOne({ "products.productId": productId });
-<<<<<<< HEAD
-
+    const existOrder = await Order.findOne({ "products.productId": objId });
+    console.log('existOrder',existOrder)
+  
     if (existOrder) {
         if (!existOrder.isDelivered && !existOrder.cancelled) {
-            throw new ApiError(400, "Cannot delete product because order is not delivered");
-        }
-=======
-    if (existOrder.isDelivered === false) {
         throw new ApiError(400, "Cannot delete product as it is part of an existing order");
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
+
+        }
     }
     await Cart.updateMany(
         {
@@ -389,9 +376,7 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     let findProductCategory = await Product.find({ category: product.category })
 
     let category = await Category.findById(product.category)
-    if (!category) {
-        throw new ApiError(404, "Category not found")
-    }
+    
 
     let checkUserRole = product.user.toString() === user.id.toString() || user.role === "superadmin"
     if (!checkUserRole) {
@@ -408,10 +393,6 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
 const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
     try {
         const user = req.user?._id;
-<<<<<<< HEAD
-
-=======
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         if (!user) {
             throw new ApiError(401, "User not logged in");
         }
@@ -419,29 +400,17 @@ const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
 
         const sellerProducts = await Product.find({ user: user })
 
-<<<<<<< HEAD
         // if (sellerProducts.length === 0) {
         //     return res
         //         .status(404)
         //         .json(new ApiResponse(404, [], "Seller has no products"));
         // }
-=======
-        if (sellerProducts.length === 0) {
-            return res
-                .status(404)
-                .json(new ApiResponse(404, [], "Seller has no products"));
-        }
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
         const getAllOrdered = await Order.find()
             .populate("userId", "username email phone")
             .populate("products.productId", "title price image")
 
         const addresses = await Address.find()
-<<<<<<< HEAD
-        const getAllUserPayment = await UserPayment.find()
-=======
             const getAllUserPayment=await UserPayment.find()
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
         const ordersWithDetails = getAllOrdered.map(order => {
             const orderAddress = addresses.find(address => address.user.toString() === order.userId?._id.toString());
@@ -449,48 +418,22 @@ const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
             return {
                 ...order.toObject(),
                 address: orderAddress || null,
-<<<<<<< HEAD
-                paymentData: payment
-=======
                 paymentData:payment
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
             };
         });
         // Extract product IDs of admin's products
-        const sellerProductIds = sellerProducts.map(p => p._id.toString());
-<<<<<<< HEAD
-        let filterSellerProducts
+        const sellerProductIds =sellerProducts.length !== 0 ? sellerProducts.map(p => p._id.toString()): []
+    let filterSellerProducts
         if (sellerProducts.length === 0) {
             filterSellerProducts=ordersWithDetails
         }else{
             
-                        filterSellerProducts = ordersWithDetails
-                            .map(order => {
-                                // keep only the products that belong to this seller
-                                const sellerItems = order.products.filter(p =>
-                                    sellerProductIds.includes(p.productId._id.toString())
-                                );
-            
-            
-                                return {
-                                    ...order,
-                                    products: sellerItems
-                                };
-                            })
-                            .filter(Boolean);
-
-        }
-
-=======
-
-        const filterSellerProducts = ordersWithDetails
+                 filterSellerProducts = ordersWithDetails
             .map(order => {
                 // keep only the products that belong to this seller
                 const sellerItems = order.products.filter(p =>
-                    sellerProductIds.includes(p.productId._id.toString())
+                    sellerProductIds.includes(p.productId?._id.toString())
                 );
-
-                if (sellerItems.length === 0) return null;
 
                 return {
                     ...order,
@@ -498,8 +441,9 @@ const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
                 };
             })
             .filter(Boolean);
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
+        }
+     
 
         res.status(200).json(new ApiResponse(200, filterSellerProducts));
     } catch (error) {
@@ -523,11 +467,7 @@ const orderConfirmed = asyncHandler(async (req, res) => {
 
     }
     const order = await Order.findById(orderId)
-<<<<<<< HEAD
-        .populate("userId", "username email phone")
-=======
     .populate("userId", "username email phone")
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     if (!order) {
         throw new ApiError(404, false, "no order founded", false)
 
@@ -536,11 +476,7 @@ const orderConfirmed = asyncHandler(async (req, res) => {
     order.confirmed = !orderconfirm
     await order.save()
 
-<<<<<<< HEAD
-    await sendEmailOrderConfirmed(order)
-=======
     sendEmailOrderConfirmed(order)
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
     res.status(200).json(new ApiResponse(200, null, "order confirmed", true))
 })
@@ -644,15 +580,11 @@ const orderDelivered = asyncHandler(async (req, res) => {
 
     await order.save()
     const email = order.userId.email
-<<<<<<< HEAD
     const image = order.products[0].productId.image
     const title = order.products[0].productId.title
     const price = order.products[0].productId.price
     const subject = order.isDelivered ? "delivered" : "not delivered"
     await sendEmail(email, image, title, price, subject)
-=======
-    await orderDeliveredEmailSender(email, order._id)
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     res.status(200).json(new ApiResponse(200, null, "order delivered successfully", true))
 })
 const orderPickedByCounter = asyncHandler(async (req, res) => {
@@ -682,13 +614,8 @@ const orderPickedByCounter = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, null, "order Picked By counter", true))
 })
 
-<<<<<<< HEAD
-const refund = asyncHandler(async (req, res) => {
-    const user = req.user
-=======
 const refund=asyncHandler(async(req,res)=>{
 const user = req.user
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
     const { orderId } = req.params
     if (!user) {
         throw ApiError(401, false, "user not loged in!", false)
@@ -696,28 +623,6 @@ const user = req.user
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
-<<<<<<< HEAD
-    if (sellerRole !== user.role) {
-        throw new ApiError(401, false, "you can't access secure route", false)
-
-    }
-    const order = await Order.findById(orderId)
-        .populate("userId", "username email")
-        .populate("products.productId", "title image price");
-    if (!order) {
-        throw new ApiError(404, false, "no order founded", false)
-
-    }
-    const refund = order.refund
-    order.refund = !refund
-    await order.save()
-    const refundedProducts = order.products.map(p => p.productId);
-    const email = order.userId.email;
-    const userName = order.userId.username || "Customer";
-
-    await sendEmailRefundConfirmation(order, refundedProducts, email, userName)
-
-=======
      if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
@@ -738,7 +643,6 @@ const order = await Order.findById(orderId)
   
 await sendEmailRefundConfirmation(order,refundedProducts,email,userName)
   
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
 
     res.status(200).json(new ApiResponse(200, null, "payment refunded", true))
 
@@ -760,8 +664,4 @@ export {
     orderPickedByCounter,
     refund
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95

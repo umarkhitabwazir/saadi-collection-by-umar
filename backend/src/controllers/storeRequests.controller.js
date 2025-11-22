@@ -36,7 +36,8 @@ const sellerRequest = asyncHandler(async (req, res) => {
   }
   // Check if email already submitted a seller request
   const existingRequest = await SellerRequest.findOne({ email });
-
+if (existingRequest) {
+  
   switch (existingRequest.status) {
     case "approved":
       throw new ApiError(400, "Your store is already approved. You can log in to your account.");
@@ -57,6 +58,7 @@ const sellerRequest = asyncHandler(async (req, res) => {
     default:
       throw new ApiError(400, "Invalid store status.");
   }
+}
 
   // Create new seller request
   const createRequest = await SellerRequest.create({

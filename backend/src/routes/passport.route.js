@@ -21,9 +21,7 @@ passportRouter.get(
             req.logIn(user,async (err) => {
                 if (err) return res.status(500).send("Login failed");
                   const { accessToken, refreshToken } =await generateAccessAndRefereshTokens(req.user._id);
-                // console.log('refreshToken ingoogle/callback',refreshToken)
-                // console.log('accessToken ingoogle/callback',accessToken)
-                const options = {
+                               const options = {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: process.env.NODE_ENV === 'production' ? "None" : 'Lax',

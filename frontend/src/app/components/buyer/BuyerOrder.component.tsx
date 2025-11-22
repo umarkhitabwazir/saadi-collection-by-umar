@@ -206,7 +206,7 @@ const BuyerOrderComponent = () => {
                 <DeleveredOrderComponent
                   fetchOrders={fetchOrders}
                   deleveredOders={deleveredOders}
-                  products={products} />
+                   />
 
               )}
 

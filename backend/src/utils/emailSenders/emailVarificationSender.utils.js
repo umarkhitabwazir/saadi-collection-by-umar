@@ -8,7 +8,6 @@ import { ApiError } from "../apiError.js";
 export const sendEmailVarification = async (email, emailVerificationCode) => {
     // const verificationLink = `${process.env.CORS_ORIGIN}verify-email?&code=${emailVerificationCode}`;
 
-<<<<<<< HEAD
     const mailOptions = {
   from: `"noreply" ${process.env.EMAIL_USER}`,
   to: email,
@@ -26,20 +25,5 @@ export const sendEmailVarification = async (email, emailVerificationCode) => {
             resolve(info);
         });
     });
-=======
-try {
-        const mailOptions = {
-      from: `"noreply" ${process.env.EMAIL_USER}`,
-      to: email,
-      subject: "Email Verification",
-      html:emailVerificationTemp(emailVerificationCode)
-    };
-    
-      const info = await transporter.sendMail(mailOptions);
-            return info;
-} catch (error) {
-    console.log('sendemailvarficaton error',error)
-    throw new ApiError(error)
-}
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
+
 };

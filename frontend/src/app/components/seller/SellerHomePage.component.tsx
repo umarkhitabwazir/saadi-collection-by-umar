@@ -287,12 +287,30 @@ const SellerHomePageComponent = () => {
                   key={product._id}
                   className="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300"
                 >
-                  <div className="p-5">
+                  
+                  <div className="p-1">
                     <div className="flex items-start gap-4">
                       <div className="flex-shrink-0">
-                        <div className=" " >
-                          <Image src={product.image} width={120} height={120} alt="product img" />
-                        </div>
+                       <div className="">
+
+                          <Image
+                           src={product.image} 
+                         onClick={() => window.open(product.image, "_self")}
+                                className={`rounded-lg object-cover   shadow-md cursor-pointer`}
+                                width={400}
+                                height={400}
+                           alt="product img" />
+                       
+                       </div>
+                        <button
+                                  onClick={() => window.open(product.image, "_self")}
+                                  className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                                >
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                  </svg>
+                                </button>
                       </div>
                       <div className="min-w-0">
                         <h2 className="text-lg font-bold text-gray-900 break-words line-clamp-2">

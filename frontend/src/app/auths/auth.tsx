@@ -19,11 +19,6 @@ export const useAuth = () => {
         setUser(res.data.data)
       } catch (err: unknown) {
                  if (err instanceof AxiosError) {
-<<<<<<< HEAD
-=======
-     
-          
->>>>>>> b8914c9815d3a01f327168a987b832ac43b6ff95
                    setError(err?.response?.data?.message  || "Failed to fetch user")
         }
       

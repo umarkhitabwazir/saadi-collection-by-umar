@@ -2,12 +2,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Image from 'next/image';
 import { OrderInterface } from '../../utils/orderInterface';
-type Product = {
-  _id: string;
-  title: string;
-  price: number;
-  image: string;
-};
 
 
 
@@ -16,11 +10,11 @@ const DeleveredOrderComponent =
   ({
     fetchOrders,
     deleveredOders,
-    products
+    
   }: {
     fetchOrders: () => void;
     deleveredOders: OrderInterface[],
-    products: Product[]
+    
   }
   ) => {
     const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
@@ -52,26 +46,50 @@ const DeleveredOrderComponent =
           <div key={order._id} className="animate-fadeIn">
             <div className="flex flex-wrap items-center w-full justify-between gap-3 bg-green-50 rounded-xl p-4 mb-4">
               {order.products.map((product, productIndex) => (
-                <div
-                  key={`${product.productId._id}-${productIndex}`}
-                  className="  w-16 h-16 flex flex-col items-center justify-center p-1"
-                >
-                  <a
-                    href={product.productId.image}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                product.productId
+                  ?
+                  <div
+                    key={`${product.productId._id}-${productIndex}`}
+                    className="  w-16 h-16 flex flex-col items-center justify-center p-1"
                   >
-                    <Image
-                      src={product.productId.image}
-                      alt={product.productId.title}
-                      width={50}
-                      height={50}
-                      className="rounded object-cover cursor-pointer hover:opacity-80 transition"
-                    />
-                  </a>
+                    <a
+                      href={product.productId.image}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Image
+                        src={product.productId.image}
+                        alt={product.productId.title}
+                        width={50}
+                        height={50}
+                        className="rounded object-cover cursor-pointer hover:opacity-80 transition"
+                      />
+                    </a>
 
-                  <p className="text-xs text-gray-700 text-center">{product.productId.title}</p>
-                </div>
+                    <p className="text-xs text-gray-700 text-center">{product.productId.title}</p>
+                  </div>
+                  :
+                  <div 
+                  key={productIndex + Math.random()} 
+                  className="flex items-center justify-between p-6">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-red-800">
+                          Item No Longer Available
+                        </p>
+                        <p className="text-xs text-red-600 mt-1">
+                          This product has been removed
+                        </p>
+                      </div>
+                    </div>
+
+
+                  </div>
               ))}
 
               <div className="ml-4">
@@ -157,47 +175,12 @@ const DeleveredOrderComponent =
                     (Tax: ${order.taxPrice.toFixed(2)}, Shipping: $
                     {order.shippingPrice.toFixed(2)})
                   </p>
-
-                  <div className="space-y-4">
-                    {order.products.map((orderProduct) => {
-                      const product = products.find(
-                        (p) => p._id === orderProduct.productId._id
-                      );
-                      if (!product) return null;
-
-                      return (
-                        <div
-                          key={orderProduct.productId._id}
-                          className="flex items-center gap-4 p-4 border rounded-lg bg-gray-50 hover:bg-gray-100 transition duration-300"
-                        >
-                          <Image
-                            src={product.image}
-                            alt={product.title}
-                            width={50}
-                            height={50}
-                            className="rounded-lg object-cover"
-                          />
-                          <div>
-                            <h3 className="text-lg font-semibold text-gray-800">
-                              {product.title}
-                            </h3>
-                            <p className="text-sm text-gray-500">
-                              Price: ${product.price.toFixed(2)}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              Quantity: {orderProduct.quantity}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-
-                  <div className="flex justify-end mt-4">
+             
+                  {/* <div className="flex justify-end mt-4">
                     <button className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-500 transition">
                       Order
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               )}
             </div>

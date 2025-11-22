@@ -19,7 +19,7 @@ export default passport.use(
             callbackURL: `/api/v2/auth/google/callback`,
             scope: ['profile', 'email'],
         },
-        async (accessToken, refreshToken, profile, done) => {
+        async (accessToken,refreshToken, profile, done) => {
          
 
             try {
@@ -52,7 +52,8 @@ export default passport.use(
                 
             } catch (err) {
                 console.log('sign up with google error', err)
-                return done(err, null);
+   return done(null, false, { message: err});
+            
 
             }
         }
