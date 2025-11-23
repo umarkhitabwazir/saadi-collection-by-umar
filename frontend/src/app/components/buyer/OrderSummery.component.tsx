@@ -32,10 +32,13 @@ const ShippingComponent = () => {
 
 const getAddress = async (): Promise<boolean> => {
   try {
+    
     const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true });
+    setLoading(false)
     const hasAddress = res.data.success
    return hasAddress;
   } catch  {
+      setLoading(false)
     
     return false;
   }

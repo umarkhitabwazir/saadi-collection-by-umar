@@ -217,8 +217,14 @@ const Products = () => {
                       </div>
                       <span className={`text-xl font-bold ${isOutOfStock ? 'text-gray-400' : 'text-emerald-600'}`}>PKR {product.price}</span>
                     </div>
-
-<p className={open ? "mt-3 text-gray-600 text-sm leading-relaxed" : "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2"}> {product.description} </p>
+<div>
+  
+</div>
+<p className={open ? "mt-3 text-gray-600 text-sm leading-relaxed break-all " 
+  :
+   "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2 break-all"}>
+     {product.description} 
+     </p>
 
 <button onClick={() => setOpen(!open)} className="text-blue-600 text-xs mt-1">
 {open ? "Show less" : "Show more"}

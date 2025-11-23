@@ -80,9 +80,11 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
                 {/* Product Details */}
                 <div className="flex flex-wrap  flex-col justify-between space-y-4 w-full">
                   <h1 className="text-2xl font-bold text-gray-900">{products.title || "Untitled Product"}</h1>
-                  <p className={
-                    open ? "mt-3 text-gray-600 text-sm leading-relaxed"
-                      : "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2"}>
+                  <p
+                  onClick={() => setOpen(!open)}
+                   className={
+                    open ? "mt-3 text-gray-600 text-sm leading-relaxed cursor-pointer break-all"
+                      : "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2 cursor-pointer break-all"}>
                     {products.description || "No description available."} </p>
 
                   <button onClick={() => setOpen(!open)} className="text-blue-600 text-xs mt-1">

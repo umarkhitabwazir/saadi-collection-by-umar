@@ -325,8 +325,8 @@ const SellerHomePageComponent = () => {
 
                  
 <p className={openDescription ?
-   "mt-3 text-gray-600 text-sm leading-relaxed"
-    : "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2"}>
+   "mt-3 text-gray-600 text-sm leading-relaxed break-all"
+    : "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2 break-all"}>
        {product.description}
         </p>
 
@@ -354,7 +354,6 @@ onClick={() => setOpenDescription(!openDescription)}
                       </div>
                       <div className="flex flex-col justify-center">
                         <p className="text-xs text-gray-500">ID</p>
-                        {/* <p className="text-sm text-gray-600 truncate">{product._id</p> */}
                       <p className={openProductId ?
                          "mt-3 text-gray-600 text-sm leading-relaxed break-all" 
                          : "mt-3 text-gray-600 text-sm leading-relaxed break-all line-clamp-2"}>
