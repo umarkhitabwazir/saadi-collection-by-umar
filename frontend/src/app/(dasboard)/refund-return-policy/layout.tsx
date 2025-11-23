@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Head from "next/head";
 
 
 export const metadata: Metadata = {
@@ -23,8 +24,11 @@ export default function SellerLayout({
   children: React.ReactNode;
 }) {
   return (
-   
-          <main className="">{children}</main>
-     
+       <>
+      <Head>
+        <link rel="canonical" href="https://www.saadicollection.shop/refund-return-policy" />
+      </Head>
+   <main className="">{children}</main>
+   </>
   );
 }

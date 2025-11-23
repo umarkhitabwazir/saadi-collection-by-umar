@@ -81,7 +81,8 @@ const LoginComponent = () => {
           <div className="text-center mb-10">
             <Image src="/logo.jpg" alt="App Logo" width={100} height={100} className="mx-auto rounded-full mb-4" />
             <h1 className="text-4xl font-extrabold text-orange-200">Welcome Back</h1>
-            <p className="text-gray-300 mt-2">Log in to manage your account and explore new features</p>
+            <h1 className="text-4xl font-extrabold text-orange-50">Login to Saadi Collection</h1>
+          <p className="text-gray-300 mt-2">Log in to manage your account and explore new features</p>
           </div>
 
           {error && (
