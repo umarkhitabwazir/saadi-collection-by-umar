@@ -94,7 +94,8 @@ const BuyerOrderComponent = () => {
         { withCredentials: true }
       );
       setProducts(productRes.data.data);
-    } catch (error) {
+    } catch  {
+
       router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
 
     }
