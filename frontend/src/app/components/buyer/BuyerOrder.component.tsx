@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import PendingOrderComponent from "./PendingOrder.component";
 import DeleveredOrderComponent from "./DeleveredOrder.component";
 import ProductReviewComponent from "./ProductReviewForm.component";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ProductInterface } from "../../utils/productsInterface";
 import { OrderInterface } from "../../utils/orderInterface";
 import buyerAuth from "../../auths/buyerAuth";
@@ -20,10 +20,12 @@ const BuyerOrderComponent = () => {
   const searchParams = useSearchParams();
   const tabFromParams = searchParams.get('tab')
   const productId = searchParams.get("product");
-
+  const updatedSearchParams = new URLSearchParams(searchParams.toString())
+  const trackPath = usePathname();
+  const router = useRouter()
   const [pendingOders, setPendingOrders] = useState<OrderInterface[]>([]);
   const [deleveredOders, setDeleveredOders] = useState<OrderInterface[]>([]);
-  const [cancelOrders,setCancelOrders]=useState<OrderInterface[]>([])
+  const [cancelOrders, setCancelOrders] = useState<OrderInterface[]>([])
   const [products, setProducts] = useState<ProductInterface[]>([]);
   const [activeTab, setActiveTab] = useState('pending');
   const [menuOpen, setMenuOpen] = useState(false);
@@ -69,7 +71,7 @@ const BuyerOrderComponent = () => {
       const data = res.data.data
       const fetchedPendingOrders: OrderInterface[] = data.filter((order: OrderInterface) => !order.isDelivered);
       const fetchedDeleveredOrders: OrderInterface[] = data.filter((order: OrderInterface) => order.isDelivered);
-      const fetchCancelOrders:OrderInterface[]= fetchedPendingOrders.filter((order: OrderInterface) => order.cancelled);
+      const fetchCancelOrders: OrderInterface[] = fetchedPendingOrders.filter((order: OrderInterface) => order.cancelled);
       const fetchedPendingOrdersAcceptedcancelled = fetchedPendingOrders.filter((order: OrderInterface) => !order.cancelled);
       setCancelOrders(fetchCancelOrders)
       setPendingOrders(fetchedPendingOrdersAcceptedcancelled);
@@ -93,7 +95,8 @@ const BuyerOrderComponent = () => {
       );
       setProducts(productRes.data.data);
     } catch (error) {
-      console.error("Error fetching orders or products:", error);
+      router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
+
     }
   };
   useEffect(() => {
@@ -206,7 +209,7 @@ const BuyerOrderComponent = () => {
                 <DeleveredOrderComponent
                   fetchOrders={fetchOrders}
                   deleveredOders={deleveredOders}
-                   />
+                />
 
               )}
 

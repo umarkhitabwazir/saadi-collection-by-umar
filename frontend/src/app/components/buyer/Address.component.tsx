@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { provinces, citiesByProvince } from "../../constants/locationData"
 import buyerAuth from '@/app/auths/buyerAuth';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 
 type AddressInterface = {
@@ -34,6 +35,10 @@ const AddressComponent = () => {
   const [loading, setLoading] = useState<boolean>(false)
   const [selectedProvince, setSelectedProvince] = useState("");
   const [filteredCities, setFilteredCities] = useState<string[]>([]);
+    const searchParams = useSearchParams();
+  const updatedSearchParams = new URLSearchParams(searchParams.toString())
+          const trackPath = usePathname();
+  const router=useRouter()
   const {
     register,
     handleSubmit,
@@ -118,6 +123,8 @@ const AddressComponent = () => {
 
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+                            router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
+
         setLoading(false)
         return;
       }

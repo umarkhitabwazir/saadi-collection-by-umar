@@ -70,8 +70,7 @@ const buyerAuth = <P extends WithAuthProps>(
                 }
 
 
-            } finally {
-            }
+            } 
         };
         useEffect(() => {
 
