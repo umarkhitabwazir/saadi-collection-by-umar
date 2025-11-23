@@ -1,6 +1,7 @@
 "use client";
 import axios, { AxiosError } from "axios";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
@@ -16,14 +17,18 @@ const ResetPasswordComponent = () => {
     const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
-        setLoading(true);
+        setError(undefined)
+
         try {
+            setLoading(true);
             await axios.post(`${API_URL}/forgotPassword`, { email: form.email.value })
 
             router.push(`?email=${form.email.value}`);
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
+
+                setLoading(false)
                 setError(error?.response?.data.error)
             }
 
@@ -57,6 +62,7 @@ const ResetPasswordComponent = () => {
 
         } catch (error: unknown) {
             if (error instanceof AxiosError) {
+                setLoading(false)
                 setError(error?.response?.data.error)
 
 
@@ -71,6 +77,7 @@ const ResetPasswordComponent = () => {
     return (
         <>
             {
+
                 !email ?
                     <div className="bg-gray-100 text-black flex w-auto justify-center items-center min-h-screen p-4">
                         <form
@@ -88,23 +95,27 @@ const ResetPasswordComponent = () => {
                                 required
                                 className="border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
+                            {
+                                error &&
+                                <p
+                                    className="text-xs text-red-600 font-light flex justify-center items-center mt-4">
+                                    {error}
+                                </p>
+                            }
                             <button
                                 type="submit"
                                 className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition"
                             >
                                 {loading ? 'loading...' : 'send code'}
                             </button>
+                            <Link href="/" className="hover:text-gray-500 transition-colors duration-200">Home Page ↗</Link>
+
                         </form>
-                        {
-                            error &&
-                            <p className="text-red-600 font-light flex justify-center items-center mt-4">
-                                {error}
-                            </p>
-                        }
+
                     </div>
                     :
                     <div className="bg-gray-100 text-black flex w-auto justify-center items-center min-h-screen p-4">
-                       
+
                         <form
                             onSubmit={handleResetPassword}
                             className="flex flex-col">
@@ -171,14 +182,18 @@ const ResetPasswordComponent = () => {
                                 </button>
                                 {
                                     error &&
-                                    <p className="text-red-600 font-light flex justify-center items-center mt-4">
+                                    <p className="text-red-600 text-xs font-light flex justify-center items-center mt-4">
                                         {error}
                                     </p>
                                 }
                             </div>
+                            <Link href="/" className="hover:text-gray-500 transition-colors duration-200">Home Page ↗</Link>
+
                         </form>
+
                     </div>
             }
+
         </>
     );
 };

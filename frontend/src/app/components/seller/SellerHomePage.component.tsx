@@ -19,6 +19,9 @@ const SellerHomePageComponent = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+    const [openDescription,setOpenDescription]=useState(false)
+    const [openProductId,setOpenProductId]=useState(false)
+  
   const router = useRouter();
 
   const getAdminProducts = async () => {
@@ -295,7 +298,7 @@ const SellerHomePageComponent = () => {
 
                           <Image
                            src={product.image} 
-                         onClick={() => window.open(product.image, "_self")}
+                         onClick={() => window.open(product.image, "_blank")}
                                 className={`rounded-lg object-cover   shadow-md cursor-pointer`}
                                 width={400}
                                 height={400}
@@ -303,7 +306,7 @@ const SellerHomePageComponent = () => {
                        
                        </div>
                         <button
-                                  onClick={() => window.open(product.image, "_self")}
+                                  onClick={() => window.open(product.image, "_blank")}
                                   className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200"
                                 >
                                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,10 +323,18 @@ const SellerHomePageComponent = () => {
                       </div>
                     </div>
 
-                    <p className="mt-4 text-gray-600 text-sm line-clamp-2">
-                      {product.description}
-                    </p>
+                 
+<p className={openDescription ?
+   "mt-3 text-gray-600 text-sm leading-relaxed"
+    : "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2"}>
+       {product.description}
+        </p>
 
+<button 
+onClick={() => setOpenDescription(!openDescription)}
+ className="text-blue-600 text-xs mt-1">
+{openDescription ? "Show less" : "Show more"}
+</button>
                     <div className="mt-5 grid grid-cols-2 gap-3">
                       <div>
                         <p className="text-xs text-gray-500">Price</p>
@@ -341,9 +352,17 @@ const SellerHomePageComponent = () => {
                           {new Date(product.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </p>
                       </div>
-                      <div>
+                      <div className="flex flex-col justify-center">
                         <p className="text-xs text-gray-500">ID</p>
-                        <p className="text-sm text-gray-600 truncate">{product._id.slice(0, 8)}...</p>
+                        {/* <p className="text-sm text-gray-600 truncate">{product._id</p> */}
+                      <p className={openProductId ?
+                         "mt-3 text-gray-600 text-sm leading-relaxed break-all" 
+                         : "mt-3 text-gray-600 text-sm leading-relaxed break-all line-clamp-2"}>
+                         {product._id} </p>
+
+<button onClick={() => setOpenProductId(!openProductId)} className="text-blue-600 text-xs mt-1">
+{openProductId ? "Show less" : "Show more"}
+</button>
                       </div>
                     </div>
                   </div>

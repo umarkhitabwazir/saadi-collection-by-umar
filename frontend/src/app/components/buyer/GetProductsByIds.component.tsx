@@ -16,8 +16,10 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
   const queryProductIds = idsAndQuantityArr || [];
   const [product, setProduct] = useState<ProductInterface[]>([]);
   const [countReviews, setCountReviews] = useState<{ [key: string]: number }>({});
+  const [open, setOpen] = useState(false)
+
   const pathName = usePathname();
-  const productReviewShowingRoutes = ["/buyer/order","/buyer/payment-cashier"].includes(pathName)
+  const productReviewShowingRoutes = ["/buyer/order", "/buyer/payment-cashier"].includes(pathName)
 
 
 
@@ -65,7 +67,7 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
                   <Image
                     src={products.image}
                     alt={products.title}
-                    onClick={() => window.open(products.image, "_self")}
+                    onClick={() => window.open(products.image, "_blank")}
                     className={`rounded-lg object-cover   shadow-md cursor-pointer`}
                     width={400}
                     height={400}
@@ -78,8 +80,14 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
                 {/* Product Details */}
                 <div className="flex flex-wrap  flex-col justify-between space-y-4 w-full">
                   <h1 className="text-2xl font-bold text-gray-900">{products.title || "Untitled Product"}</h1>
-                  <p className="text-sm text-gray-700">{products.description || "No description available."}</p>
+                  <p className={
+                    open ? "mt-3 text-gray-600 text-sm leading-relaxed"
+                      : "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2"}>
+                    {products.description || "No description available."} </p>
 
+                  <button onClick={() => setOpen(!open)} className="text-blue-600 text-xs mt-1">
+                    {open ? "Show less" : "Show more"}
+                  </button>
                   {/* Product Pricing & Brand */}
                   <div className="text-gray-800">
                     <h2 className="text-lg font-semibold">

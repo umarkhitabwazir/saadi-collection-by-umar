@@ -2,7 +2,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import axios, { AxiosError } from "axios";
-import NoInternetComponent from "../components/NoInternet.component";
 import { UserInterface } from "../utils/user.interface";
 interface WithAuthProps {
     user: UserInterface
@@ -14,7 +13,6 @@ const buyerAuth = <P extends WithAuthProps>(
     const AuthenticatedComponent = (props: Omit<P, "user">) => {
         const router = useRouter();
         const [user, setUser] = useState<WithAuthProps | null>(null);
-        const [networkError, setNetworkError] = useState(false);
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
         const Roles=process.env.NEXT_PUBLIC_ROLES?.split(',') || []
         const pathName = usePathname();
@@ -56,12 +54,11 @@ const buyerAuth = <P extends WithAuthProps>(
 
                 setUser(response.data.data);
             } catch (error: unknown) {
-
                 if (error instanceof AxiosError) {
-                
-                    if (error.code === "ERR_NETWORK") {
-                        setNetworkError(true);
+                    
+                    if (!publicRoutes && !isAuthRoutes && error.code === "ERR_NETWORK") {
 
+                        router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
                         return null;
                     }
                     if (!publicRoutes && error?.response?.status === 401 && !isAuthRoutes) {
@@ -82,9 +79,7 @@ const buyerAuth = <P extends WithAuthProps>(
         }, []);
 
 
-        if (networkError) {
-            return <NoInternetComponent />
-        }
+ 
 
 
 

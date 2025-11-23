@@ -169,7 +169,7 @@ const BuyerNavbarComponent = () => {
                                 </div>
                                 {/* Desktop Navigation */}
                                 <div className="hidden md:flex items-center flex-wrap justify-between space-x-2 space-y-2 md:space-y-0">
-                                   <button
+                                    <button
                                         onClick={() => router.push('/request-store')}
                                         className="text-sm font-medium hover:text-blue-400"
                                     >
@@ -281,12 +281,7 @@ const BuyerNavbarComponent = () => {
                                     </div>
 
                                     <div className="hidden md:flex items-center space-x-4">
-                                        <Link
-                                            href='/contact'
-                                            className="font-medium hover:text-gray-300 cursor-pointer"
-                                        >
-                                            Contact Us
-                                        </Link>
+                                       
                                         {/* User Actions */}
                                         <div className="relative">
                                             <button
@@ -316,11 +311,7 @@ const BuyerNavbarComponent = () => {
                                                 className="py-2 pl-3 pr-8 rounded-lg bg-gray-800 border border-gray-700 hover:border-cyan-400 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent cursor-pointer transition-all duration-200 appearance-none"
                                             >
                                                 <option
-                                                    className="text-gray-400"
-                                                    value={user?.email?.split('@')[0]}
-                                                    disabled
-                                                    hidden
-                                                >
+                                                    className="text-gray-400">
                                                     {user ? user.email?.split('@')[0] : "Account"}
                                                 </option>
                                                 <option value="sign-up">Sign Up</option>
@@ -331,6 +322,7 @@ const BuyerNavbarComponent = () => {
                                                     Profile
                                                 </option>
                                                 <option value="login">Login</option>
+                                                <option value="contact">Contact Us</option>
                                             </select>
                                         </div>
 
@@ -388,8 +380,8 @@ const BuyerNavbarComponent = () => {
                             {/* Mobile Navigation */}
                             {isMenuOpen && (
                                 <div className="md:hidden relative flex flex-col gap-4   mt-4 p-3  rounded-lg shadow-lg">
-                                        <OrdersIconComponent />
-                                 
+                                    <OrdersIconComponent />
+
                                     {
                                         !sellerRoleAuth && user?.role === userRoles?.[2] &&
                                         <Link href="/seller"
@@ -503,9 +495,6 @@ const BuyerNavbarComponent = () => {
                                         >
                                             <option
                                                 className="text-gray-400"
-                                                value={user?.email?.split('@')[0]}
-                                                disabled
-                                                hidden
                                             >
                                                 {user ? user.email?.split('@')[0] : "Account"}
                                             </option>

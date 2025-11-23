@@ -22,6 +22,7 @@ const Products = () => {
   const [showAddTocart, setShowAddTocart] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [favProductsIds, setFavProductsIds] = useState<string[]>([]);
+  const [open,setOpen]=useState(false)
 
   const router = useRouter();
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -217,8 +218,11 @@ const Products = () => {
                       <span className={`text-xl font-bold ${isOutOfStock ? 'text-gray-400' : 'text-emerald-600'}`}>PKR {product.price}</span>
                     </div>
 
-                    <p className="mt-3 text-gray-600 text-sm line-clamp-2 leading-relaxed">{product.description}</p>
+<p className={open ? "mt-3 text-gray-600 text-sm leading-relaxed" : "mt-3 text-gray-600 text-sm leading-relaxed line-clamp-2"}> {product.description} </p>
 
+<button onClick={() => setOpen(!open)} className="text-blue-600 text-xs mt-1">
+{open ? "Show less" : "Show more"}
+</button>
                     <div className="mt-4 flex flex-col gap-2">
                       <div className="flex items-center">
                         <div className="flex mr-2">

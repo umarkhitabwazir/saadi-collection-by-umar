@@ -153,7 +153,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
         }
         if (user.googleId) {
             throw new ApiError(400, "This account only supports Google login. Use Google to continue.")
-            
+
         }
         const isMatch = await user.comparePassword(password)
         if (!isMatch) {
@@ -210,13 +210,16 @@ const loginUser = asyncHandler(async (req, res, next) => {
 
 const forgotPassword = asyncHandler(async (req, res) => {
     const { email } = req.body;
-    try {
+    
         if (!email) {
             throw new ApiError(400, "Email is required.");
         }
         const user = await User.findOne({ email: email });
         if (!user) {
             throw new ApiError(404, "User not found with this email.");
+        }
+        if (user.googleId) {
+            throw new ApiError(400, "User already registered with Google. Use Google Sign In.");
         }
         const emailVerificationCode = Math.floor(100000 + Math.random() * 900000);
         user.passwordResetCode = emailVerificationCode;
@@ -225,9 +228,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
         await sendEmailVarification(user.email, emailVerificationCode);
         res.status(200).json(new ApiResponse(200, null, "email varification code send successfully."));
 
-    } catch (error) {
-        console.error("forgotPassError", error)
-    }
+   
 })
 const resetPassword = asyncHandler(async (req, res) => {
     const { email, passwordResetCode, newPassword } = req.body;
@@ -299,7 +300,7 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
     user.isVerified = true;
     user.emailVerificationCode = null;
-    user.status="approved"
+    user.status = "approved"
 
     await generateAccessAndRefereshTokens(user._id);
     await user.save();

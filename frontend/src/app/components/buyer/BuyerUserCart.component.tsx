@@ -208,7 +208,7 @@ const hasAddress = await getAddress();
     <div className="relative w-full h-64 xs:w-16 xs:h-16 bg-white rounded-lg border border-gray-200 overflow-hidden">
       <Image
        className="w-full h-64 object-cover "
-        onClick={() => window.open(cartItem.product.image, "_self")}
+        onClick={() => window.open(cartItem.product.image, "_blank")}
 width={400}
       height={400}
         src={cartItem.product.image}

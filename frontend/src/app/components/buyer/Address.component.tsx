@@ -5,6 +5,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { provinces, citiesByProvince } from "../../constants/locationData"
+import buyerAuth from '@/app/auths/buyerAuth';
 
 
 type AddressInterface = {
@@ -465,4 +466,4 @@ const AddressComponent = () => {
   );
 };
 
-export default AddressComponent;
+export default buyerAuth( AddressComponent);
