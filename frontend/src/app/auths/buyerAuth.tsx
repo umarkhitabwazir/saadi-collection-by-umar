@@ -53,11 +53,12 @@ const buyerAuth = <P extends WithAuthProps>(
                 }
 
                 setUser(response.data.data);
-            } catch (error: unknown) {
+            } catch (error: any) {                
+                if (!error.response) return console.log('error?.response',error.response)
+
                 if (error instanceof AxiosError) {
                     
-                    if (!publicRoutes && !isAuthRoutes && error.code === "ERR_NETWORK") {
-
+                    if (error.code === "ERR_NETWORK") {
                         router.push(`/login?track=${trackPath}&${updatedSearchParams}`)
                         return null;
                     }

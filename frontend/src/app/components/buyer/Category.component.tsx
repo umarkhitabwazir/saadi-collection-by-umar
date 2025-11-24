@@ -33,14 +33,8 @@ const CategoryComponent = () => {
     }, [API_URL]);
 
     return (
-        <div className="absolute w-full  right-0 rounded-lg shadow-xl overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700">
-            <div className="p-4 border-b border-gray-700">
-                <h2 className="text-lg font-semibold text-white flex items-center">
-                    <span className="mr-2">📋</span> Product Categories
-                </h2>
-            </div>
-
-            <div className="max-h-60 overflow-y-auto custom-scrollbar">
+        <div className="absolute w-full  right-0 rounded-lg shadow-xl overflow-hidden bg-gradient-to-br p-2 from-gray-900 to-gray-800 border border-gray-700">
+          <div className="max-h-60 overflow-y-auto  custom-scrollbar">
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-8">
                         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 mb-3"></div>
@@ -64,20 +58,17 @@ const CategoryComponent = () => {
                         <p className="text-gray-500 text-sm mt-1 text-center">Add categories to see them listed here</p>
                     </div>
                 ) : (
-                    <div className="divide-y divide-gray-800">
+                    <div className="divide-y  ">
                         {category.map((cat) => (
                             <div
                                 key={cat._id}
-                                className="px-4 py-3 hover:bg-gray-800/60 cursor-pointer transition-all duration-200 group"
+                                className="px-4 py-3  hover:bg-gray-800/60 cursor-pointer transition-all duration-200 group"
                                 onClick={() => router.push(`/?category=${encodeURIComponent(cat.categoryName)}`)}
                             >
-                                <div className="flex items-center">
-                                    <div className="mr-3 group-hover:scale-110 transition-transform">
-                                        <div className="bg-gray-800 border border-gray-700 rounded-lg w-8 h-8 flex items-center justify-center">
-                                            <span className="text-gray-400 group-hover:text-white">&#8594;</span>
-                                        </div>
-                                    </div>
-                                    <h3 className="text-gray-300 group-hover:text-white font-medium truncate transition-colors">
+                                <div className="flex items-center ">
+                                    
+                                    <h3 title={cat.categoryName}
+                                     className="text-gray-300 group-hover:text-white text-xs font-bold truncate transition-colors">
                                         {cat.categoryName}
                                     </h3>
                                 </div>
