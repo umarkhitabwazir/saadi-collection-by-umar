@@ -49,8 +49,8 @@ const CreateProductComponent = () => {
         formData.append('brand', data.brand);
         formData.append('countInStock', data.countInStock.toString());
         formData.append('categoryName', data.categoryName);
-        data.discount && formData.append('discount', data.discount?.toString());
         if (data.discount) {
+            formData.append('discount', data.discount?.toString());
             if (data.discount > data.price) {
                 setLoading(false)
 
