@@ -14,6 +14,7 @@ const CartPanel = ({
   const [quantity, setQuantity] = useState(1);
   const [isAdding, setIsAdding] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [open,setOpen]=useState(false)
   const router = useRouter()
   const API = process.env.NEXT_PUBLIC_API_URL
 
@@ -88,11 +89,14 @@ const CartPanel = ({
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-end gap-2">
               <span className="text-2xl font-bold text-gray-900">
-              PKR{' '}{product.price.toFixed(2)}
+ PKR {Number(product.price) - Number(product.discount)}
+
               </span>
+             { product.discount >0 &&
               <span className="text-gray-500 line-through text-lg">
-                PKR{' '}{(product.price * 1.2).toFixed(2)}
+                PKR{' '}{Number(product.price).toFixed(2)}
               </span>
+}
             </div>
 
             <div className="flex items-center">
@@ -197,9 +201,38 @@ const CartPanel = ({
             <h3 className="text-lg font-semibold text-gray-900 mb-3">
               About this product
             </h3>
-            <p className="text-gray-600 mb-4">
-              {product.description}
-            </p>
+            {/* Description with Expand/Collapse */}
+                  <div className="space-y-2">
+                    <p
+                      onClick={() => setOpen((prev=>!prev))}
+                     className={open?
+                      "text-gray-700 leading-relaxed break-words transition-all duration-300" :
+                      "text-gray-700 leading-relaxed line-clamp-3 break-words transition-all duration-300"
+                    }>
+                      {product.description || "No description available."}
+                    </p>
+                    <button
+                      onClick={() => setOpen((prev=>!prev))}
+
+                      className="text-blue-600 hover:text-blue-800 font-medium text-sm transition-colors duration-200 flex items-center gap-1"
+                    >
+                      {open ? (
+                        <>
+                          <span>Show less</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                          </svg>
+                        </>
+                      ) : (
+                        <>
+                          <span>Show more</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </>
+                      )}
+                    </button>
+                  </div>
 
             <div className="flex items-center space-x-2">
               <span className="text-gray-700 font-medium">Brand:</span>

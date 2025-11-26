@@ -13,6 +13,11 @@ const productSchema = new Schema({
         required: [true, "price is required"],
         trim: true,
     },
+    discount:{
+type:Number,
+trim:true,
+default:0
+    },
     description: {
         type: String,
         required: [true, "description is required"],

@@ -98,7 +98,7 @@ const getCartData = asyncHandler(async (req, res) => {
     if (!user) {
         throw new ApiError(401, "Unauthorized")
     }
-    const findUserCart = await Cart.find({ user: user._id }).populate('cartItems.product', 'image title price description');
+    const findUserCart = await Cart.find({ user: user._id }).populate('cartItems.product', 'image countInStock discount title price description');
 
     res.status(200).json(new ApiResponse(200, findUserCart, 'cart data founded'))
 })

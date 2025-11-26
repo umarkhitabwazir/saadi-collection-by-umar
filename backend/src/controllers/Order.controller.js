@@ -8,6 +8,7 @@ import { sendEmailVarification } from "../utils/emailSenders/emailVarificationSe
 import { sendEmailOrderPlaced } from "../utils/emailSenders/sendEmailorderPlaced.utils.js";
 import { sendEmailOrderCancel } from "../utils/emailSenders/sendEmailOrderCancel.utils.js";
 import { UserPayment } from "../models/UserPayment.model.js";
+import { sendEmailOrderPlacedSeller } from "../utils/emailSenders/sendEmailOrderPlacedSeller.utils.js";
 
 
 const TAX_RATE = parseFloat(process.env.TAX_RATE);
@@ -39,11 +40,12 @@ const previewOrder = asyncHandler(async (req, res) => {
             throw new ApiError(404, `Product with ID ${item.productId} not found`);
         }
 
-        productTotalPrice += product.price * item.quantity;
+        productTotalPrice += product.price - product.discount  * item.quantity;
         return {
             productId: product._id,
             quantity: item.quantity,
             price: product.price,
+            discount:product.discount 
         };
     });
     const productquantities = validatedProducts.map((i) => i.quantity).flat().reduce((acc, quantity) => acc + quantity, 0)
@@ -76,6 +78,8 @@ const previewOrder = asyncHandler(async (req, res) => {
 
 const createOrder = asyncHandler(async (req, res) => {
     const { products, paymentMethod, transactionId } = req.body;
+  
+
     const user = req.user
 
     if (!products || !Array.isArray(products) || products.length === 0 || !paymentMethod) {
@@ -97,26 +101,52 @@ const createOrder = asyncHandler(async (req, res) => {
         if (!product) {
             throw new ApiError(404, `Product with ID ${item.productId} not found`);
         }
-        productTotalPrice += product.price * item.quantity;
+        product.countInStock = product.countInStock - item.quantity
+await product.save({ validateBeforeSave: false })
+   const priceAtOrder = product.price;
+    const discountAtOrder = product.discount;
+    const finalPrice = priceAtOrder - discountAtOrder;
+    const itemTotal = finalPrice * item.quantity;
+    productTotalPrice = productTotalPrice + itemTotal;
+       
+
         produdsArr.push({
             productId: new mongoose.Types.ObjectId(item.productId),
+            price:finalPrice,
             quantity: item.quantity,
         });
     }
 
-
+const taxAmount = (TAX_RATE / 100) * productTotalPrice;
     const order = await Order.create({
         userId: user._id,
         products: produdsArr,
         paymentMethod,
         transactionId: transactionId || '',
-        taxPrice: (2 / 100) * productTotalPrice,
-        shippingPrice: 210,
-        totalPrice: productTotalPrice + TAX_RATE + SHIPPING_COST,
+        taxPrice:taxAmount,
+        shippingPrice: SHIPPING_COST,
+        totalPrice: productTotalPrice + taxAmount + SHIPPING_COST,
     });
-    const orderedProduct = await Product.find({ _id: { $in: produdsArr.map((productIds) => productIds.productId) } })
-  await  sendEmailOrderPlaced(order, orderedProduct, user.email, user.username)
-    sendEmailOrderPlaced(order, orderedProduct, user.email, user.username)
+    const orderedProduct = await Product.find(
+        { _id: { $in: produdsArr.map((productIds) => productIds.productId) } }
+    )
+    const extractSeller=await Product.find(
+        { _id: { $in: produdsArr.map((productIds) => productIds.productId) } }
+    )
+    .select("user")
+.populate("user", "email");
+
+    const sellerEmails = extractSeller
+  .map(p => p.user.email)
+  .filter((email, index, arr) => arr.indexOf(email) === index);
+  await sendEmailOrderPlaced(order, orderedProduct, user.email, user.username)
+  
+  for (const sellerEmail of sellerEmails) {
+  await sendEmailOrderPlacedSeller(order, orderedProduct, sellerEmail);
+}
+ 
+
+
     res.status(201).json(new ApiResponse(201, order, "Order created successfully"));
 });
 
@@ -222,21 +252,31 @@ const cancelOrder = asyncHandler(async (req, res) => {
         throw new ApiError(401, "orderId is required!")
     }
     const order = await Order.findById(orderId)
-    .populate("userId", "username email")
-    .populate("products.productId", "title image price");
-    if (!order) {
-        throw new ApiError(401, "order not found!")
+        .populate("userId", "username email")
+        .populate("products.productId", "title countInStock image price");
+   if (!order) {
+  throw new Error("Order not found");
+}
 
-    }
+for (const item of order.products) {
+  const product = item.productId;
+  const qty = item.quantity;
+
+  product.countInStock = product.countInStock + qty;
+ 
+
+  await product.save({ validateBeforeSave: false });
+
+}
     order.cancelled = true
     await order.save()
-    const paymentData=await UserPayment.findOne({userId:user.id})
+    const paymentData = await UserPayment.findOne({ userId: user.id })
     const orderCancelProducts = order.products.map(p => p.productId);
     const email = order.userId.email;
     const userName = order.userId.username || "Customer";
-    const transactionId=order.transactionId
+    const transactionId = order.transactionId
 
-    await sendEmailOrderCancel(order,paymentData, orderCancelProducts, email, userName, transactionId)
+    await sendEmailOrderCancel(order, paymentData, orderCancelProducts, email, userName, transactionId)
     res.status(200).json(new ApiResponse(200, order, "order canceled successfully!"))
 })
 const findOrderedProducts = asyncHandler(async (req, res) => {

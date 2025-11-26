@@ -4,74 +4,13 @@ import { useState, Dispatch, SetStateAction, useRef } from 'react';
 import axios, { AxiosError } from 'axios';
 import { ProductInterface } from '../../utils/productsInterface';
 import Image from 'next/image';
+import { CATEGORY_ENUM } from '@/app/utils/formSchemas';
 
 
 
 const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh: Dispatch<SetStateAction<ProductInterface[]>>, setEditProductId: Dispatch<SetStateAction<string | ''>>, product: ProductInterface | null }) => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
-  const categoryEnum = [
-    "Perfume",
-    "Smart Watch",
-    "Fashion",
-    "Beauty & Skincare",
-    "Electronics",
-    "Mobile Phones",
-    "Laptops",
-    "Tablets",
-    "Desktop Computers",
-    "Computer Accessories",
-    "Cameras",
-    "Headphones",
-    "Speakers",
-    "Home Appliances",
-    "Kitchen Appliances",
-    "Refrigerators",
-    "Washing Machines",
-    "Air Conditioners",
-    "Furniture",
-    "Living Room Furniture",
-    "Bedroom Furniture",
-    "Office Furniture",
-    "Clothing Men",
-    "Clothing Women",
-    "Clothing Kids",
-    "Shoes Men",
-    "Shoes Women",
-    "Shoes Kids",
-    "Bags & Luggage",
-    "Watches",
-    "Jewelry",
-    "Books",
-    "Stationery",
-    "Sports Equipment",
-    "Fitness & Gym",
-    "Toys",
-    "Baby Products",
-    "Health Care",
-    "Pharmacy",
-    "Groceries",
-    "Snacks & Beverages",
-    "Pet Supplies",
-    "Automobile Accessories",
-    "Motorbikes",
-    "Car Accessories",
-    "Gardening",
-    "Home Decor",
-    "Lighting",
-    "Tools & Hardware",
-    "Construction Materials",
-    "Musical Instruments",
-    "Gaming Consoles",
-    "Video Games",
-    "Software",
-    "Streaming Devices",
-    "Smart Home Devices",
-    "Medical Equipment",
-    "Safety & Security",
-    "Gift Items",
-    "Seasonal Items",
-    "Arts & Crafts"
-  ]
+
 
   const [formData, setFormData] = useState({
     categoryName: product?.category.categoryName || '',
@@ -80,12 +19,15 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
     description: product?.description || '',
     countInStock: product?.countInStock || 0,
     brand: product?.brand || '',
+    discount:product?.discount
   });
 
   const [image, setImage] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | ''>('')
   const [loading, setLoading] = useState(false);
+const percent = Math.round((Number(formData.discount) / Number(formData.price)) * 100)
+
   const editBtnRef = useRef<HTMLButtonElement | null>(null);
 
 
@@ -118,7 +60,11 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
       data.append('countInStock', formData.countInStock.toString());
       data.append('brand', formData.brand);
       if (image) data.append('productImg', image);
+if (formData.discount && formData.discount>0) data.append('discount', formData.discount.toString());
+  if(formData.discount && formData.discount > formData.price){
 
+      return alert("Discount must be smaller than price")
+    }
       await axios.patch(`${API_URL}/product/update/${product._id}`, data, {
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' },
@@ -169,21 +115,13 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
             className="w-full p-2 border border-gray-300 rounded text-black"
           >
             <option value="" disabled>Select Category</option>
-            {categoryEnum.map((category) => (
+            {CATEGORY_ENUM.map((category) => (
               <option key={category} value={category}>
                 {category}
               </option>
             ))}
           </select>
 
-          {/* <input
-            type="text"
-            name="categoryName"
-            value={formData.categoryName}
-            onChange={handleChange}
-            placeholder="Category Name"
-            className="w-full p-2 border border-gray-300 rounded text-black"
-          /> */}
           <label className='text-gray-400 text-sm' htmlFor="title">TITLE</label>
           <input
             type="text"
@@ -200,6 +138,21 @@ const EditProductComponent = ({ refresh, setEditProductId, product }: { refresh:
             value={formData.price}
             onChange={handleChange}
             placeholder="Price"
+            className="w-full p-2 border border-gray-300 rounded text-black"
+          />
+          <label className='text-gray-400 text-sm' htmlFor="price">DISCOUNT</label>
+           <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Optional Discount Available: {percent}%
+                                        </span>
+          <input
+            type="number"
+            name="discount"
+            value={formData.discount}
+            onChange={handleChange}
+            placeholder="discount"
             className="w-full p-2 border border-gray-300 rounded text-black"
           />
           <label className='text-gray-400 text-sm' htmlFor="description">DESCRIPTION</label>

@@ -9,6 +9,7 @@ export interface OrderProduct {
         email:string
     }
 },
+price:number,
   quantity: number;
 }
 

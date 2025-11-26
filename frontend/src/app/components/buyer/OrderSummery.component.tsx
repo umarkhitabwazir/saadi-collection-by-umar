@@ -10,9 +10,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 const ShippingComponent = () => {
 
   const orderSummaryStructure = {
-    items: 0,
+    products: [{ price: 0, quantity: 0, discount: 0 }],
     shippingPrice: 0,
     taxPrice: 0,
+    price: 0,
     totalPrice: 0
   }
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -30,19 +31,19 @@ const ShippingComponent = () => {
     }
   }, [decoded]);
 
-const getAddress = async (): Promise<boolean> => {
-  try {
-    
-    const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true });
-    setLoading(false)
-    const hasAddress = res.data.success
-   return hasAddress;
-  } catch  {
+  const getAddress = async (): Promise<boolean> => {
+    try {
+
+      const res = await axios.get(`${API_URL}/find-address`, { withCredentials: true });
       setLoading(false)
-    
-    return false;
-  }
-};
+      const hasAddress = res.data.success
+      return hasAddress;
+    } catch {
+      setLoading(false)
+
+      return false;
+    }
+  };
   useEffect(() => {
     getAddress()
   }, []);
@@ -65,6 +66,7 @@ const getAddress = async (): Promise<boolean> => {
     const previewOrder = async () => {
 
       const res = await axios.post(`${API_URL}/preview-order`, formdata)
+      
       setOrderSummary(res.data.data)
 
 
@@ -79,7 +81,7 @@ const getAddress = async (): Promise<boolean> => {
 
   const handleProceedPay = async () => {
     setLoading(true)
-const hasAddress = await getAddress();
+    const hasAddress = await getAddress();
 
     if (!decoded) {
       setLoading(false)
@@ -100,7 +102,7 @@ const hasAddress = await getAddress();
       return;
     }
 
-    router.push(`/buyer/payment-cashier?query=${btoa(JSON.stringify({ productIdsAndQtyArr: [{ productId: decoded.productId, quantity: decoded.quantity }], price: decoded.price }))}`)
+    router.push(`/buyer/payment-cashier?query=${btoa(JSON.stringify({ productIdsAndQtyArr: [{ productId: decoded.productId, quantity: decoded.quantity }], price: orderSummary.products[0].price - orderSummary.products[0].discount }))}`)
   }
   return (
     <>
@@ -131,9 +133,19 @@ const hasAddress = await getAddress();
             {
               decoded ?
                 <div className="space-y-3">
-                  <h2 className="flex justify-between text-sm font-medium">
-                    <span>Items Total ({orderSummary.items}):</span>
-                    <span>PKR{' '}{decoded.price}</span>
+                  <h2 className="flex justify-between items-center text-sm font-medium">
+                    <span>Items Total ({orderSummary.products[0].quantity}):</span>
+                    <span>
+                      PKR{' '}{orderSummary.products[0].price - orderSummary.products[0].discount}
+                      </span>
+                    <span
+                      className="block text-sm text-gray-500 line-through">
+                      {orderSummary.products[0].price}
+                    </span>
+                    <span
+                      className="bg-green-100 text-green-700 text-sm font-semibold px-2 py-1 rounded-full">
+                      Save  {Math.round((Number(orderSummary.products[0].discount) / Number(orderSummary.products[0].price)) * 100)}%
+                    </span>
                   </h2>
                   <h2 className="flex justify-between text-sm font-medium">
                     <span>Delivery Fee:</span>

@@ -114,16 +114,10 @@ const CancelOrderComponent = ({
                                 src={product.image}
                                 alt={product.title}
                                 onClick={() => window.open(product.image, "_blank")}
-
                                 className={`rounded-lg object-cover   shadow-md cursor-pointer`}
                                 width={400}
                                 height={400}
-
                               />
-
-
-
-
                             </div>
 
                             {/* Content Container */}
@@ -145,7 +139,7 @@ const CancelOrderComponent = ({
                                   <div>
                                     <p className="text-xs text-gray-500 font-medium">Price</p>
                                     <p className="text-sm font-semibold text-gray-900">
-                                      PKR {typeof product.price === 'number' ? product.price.toFixed(2) : product.price}
+                                      PKR {orderProduct.price}
                                     </p>
                                   </div>
                                 </div>
@@ -170,7 +164,7 @@ const CancelOrderComponent = ({
                                 <div className="text-sm">
                                   <span className="text-gray-500">Subtotal: </span>
                                   <span className="font-semibold text-gray-900">
-                                    PKR {typeof product.price === 'number' ? (product.price * orderProduct.quantity).toFixed(2) : 'N/A'}
+                                   {  (orderProduct.price * orderProduct.quantity).toFixed(2) || 'N/A'}
                                   </span>
                                 </div>
 

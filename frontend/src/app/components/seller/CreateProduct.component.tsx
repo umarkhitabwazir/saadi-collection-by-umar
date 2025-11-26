@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { CreateProductSchema, CreateProductFormData } from '../../utils/formSchemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios, { AxiosError } from 'axios';import sellerAuth from '../../auths/sellerAuth';
+import axios, { AxiosError } from 'axios'; import sellerAuth from '../../auths/sellerAuth';
 
 
 // Zod schema validation
@@ -15,11 +15,13 @@ const CreateProductComponent = () => {
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    
+    const [discountPer, setDiscountPer] = useState<number | null>(null)
+
 
     const {
         register,
         handleSubmit,
+        watch,
         reset,
         formState: { errors },
     } = useForm<CreateProductFormData>({
@@ -47,26 +49,33 @@ const CreateProductComponent = () => {
         formData.append('brand', data.brand);
         formData.append('countInStock', data.countInStock.toString());
         formData.append('categoryName', data.categoryName);
+        data.discount && formData.append('discount', data.discount?.toString());
+        if (data.discount) {
+            if (data.discount > data.price) {
+                setLoading(false)
 
-       
+                return alert("Discount must be smaller than price")
+            }
+        }
+
         try {
             const res = await axios.post(`${API_URL}/product/create`, formData, { withCredentials: true })
-          
-            
+
+
             setMessage(res.data.message)
             setTimeout(() => { setMessage("") }, 2000)
             setLoading(false)
-           reset()      
+            reset()
             setImagePreview(null)
-            
-           
 
-            
+
+
+
         } catch (error: unknown) {
             setLoading(false)
 
             if (error instanceof AxiosError) {
-console.log('add product error ',error)
+                console.log('add product error ', error)
                 setError(error.response?.data.error)
             }
         }
@@ -79,16 +88,25 @@ console.log('add product error ',error)
             </div>
 
             <div className="p-6">
-          
+
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {(['title', 'brand', 'price', 'countInStock', 'categoryName'] as Array<keyof CreateProductFormData>).map((field) => (
+                        {(['title', 'brand', 'price', "discount", 'countInStock', 'categoryName'] as Array<keyof CreateProductFormData>).map((field) => (
                             <div key={field} className="space-y-1">
                                 <label htmlFor={field} className="block text-sm font-medium text-gray-700">
                                     {field === 'countInStock' ? 'Stock Quantity' :
                                         field === 'categoryName' ? 'Category' :
                                             field.charAt(0).toUpperCase() + field.slice(1)}
+                                    {' '}{field === "discount" && (
+                                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Optional Discount Available: {discountPer}%
+                                        </span>
+                                    )}
+
                                 </label>
                                 {field === 'categoryName' ? (
                                     <select
@@ -100,17 +118,36 @@ console.log('add product error ',error)
                                         <option value="" disabled>
                                             Select a category
                                         </option>
-                                        {CreateProductSchema.shape.categoryName.options.map((category) => (
-                                            <option key={category} value={category}>
+                                        {CreateProductSchema.shape.categoryName.options.map((category, indx) => (
+                                            <option key={category + indx} value={category}>
                                                 {category}
                                             </option>
                                         ))}
                                     </select>
                                 ) : (
                                     <input
-                                        type={field === 'price' || field === 'countInStock' ? 'number' : 'text'}
+                                        type={
+                                            field === 'price'
+                                                || field === "discount"
+                                                || field === 'countInStock' ? 'number' : 'text'}
                                         id={field}
                                         {...register(field)}
+                                        onChange={(e) => {
+                                            const id = e.currentTarget.id
+                                            const value = e.currentTarget.value
+
+                                            const price = id === "price" ? value : watch("price")
+                                            const discount = id === "discount" ? value : watch("discount")
+
+                                            if (price && discount) {
+                                                const percent = Math.round((Number(discount) / Number(price)) * 100)
+                                                setDiscountPer(percent)
+                                            } else {
+                                                setDiscountPer(0)
+                                            }
+                                            return register(field).onChange(e)
+                                        }}
+
                                         className="w-full px-4 py-2 text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                                         placeholder={`Enter ${field.replace(/([A-Z])/g, ' $1').toLowerCase()}`}
                                     />
@@ -247,7 +284,7 @@ console.log('add product error ',error)
                         </button>
                     </div>
                 </form>
-                      {/* Status Messages */}
+                {/* Status Messages */}
                 <div className={`text-center mb-6 p-3 rounded-lg transition-all duration-300 ${error ? "bg-red-100 text-red-700" :
                     message ? "bg-green-100 text-green-700" :
                         "bg-transparent"

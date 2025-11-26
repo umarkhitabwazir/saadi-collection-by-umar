@@ -181,7 +181,7 @@ const sellerProducts = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, product, "product founded", true))
 })
 let createProductsWithCategory = asyncHandler(async (req, res) => {
-    let { categoryName, title, price, description, countInStock, brand } = req.body
+    let { categoryName, title, discount, price, description, countInStock, brand } = req.body
     let userId = req.user
 
 
@@ -235,7 +235,8 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
                 countInStock,
                 brand,
                 user: userId,
-                category: category.id
+                category: category.id,
+                discount: discount > 0 && discount
 
             }
         )
@@ -246,7 +247,7 @@ let createProductsWithCategory = asyncHandler(async (req, res) => {
     }
 })
 let updateProductWithCategory = asyncHandler(async (req, res) => {
-    let { categoryName, title, price, description, countInStock, brand } = req.body
+    let { categoryName, title, price, discount, description, countInStock, brand } = req.body
 
     let user = req.user
 
@@ -284,13 +285,15 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
     if (!checkUserRole) {
         throw new ApiError(400, "You are not authorized to update this product")
     }
-
+  const checkProductInOrder=await Order.findOne({ "products.productId": product._id });
+  console.log("checkProductInOrder",checkProductInOrder)
     product.category = category.id
     product.title = title
     product.price = price
     product.description = description
     product.countInStock = countInStock
     product.brand = brand
+    product.discount = discount
 
     const file = req.file
 
@@ -341,20 +344,25 @@ let deleteProductWithCategory = asyncHandler(async (req, res) => {
     }
     let productId = req.params.productid
     let product = await Product.findById(productId)
-const objId = new mongoose.Types.ObjectId(productId)
+    const objId = new mongoose.Types.ObjectId(productId)
 
-
+   let checkUserRole = product.user.toString() === user.id.toString() || user.role === "superadmin"
+    if (!checkUserRole) {
+        throw new ApiError(400, "You are not authorized to delete this product")
+    }
 
     if (!product) {
         throw new ApiError(404, "Product not found")
     }
 
     const existOrder = await Order.findOne({ "products.productId": objId });
-    console.log('existOrder',existOrder)
-  
+    
+
     if (existOrder) {
+
+
         if (!existOrder.isDelivered && !existOrder.cancelled) {
-        throw new ApiError(400, "Cannot delete product as it is part of an existing order");
+            throw new ApiError(400, "Cannot delete product as it is part of an existing order");
 
         }
     }
@@ -376,12 +384,9 @@ const objId = new mongoose.Types.ObjectId(productId)
     let findProductCategory = await Product.find({ category: product.category })
 
     let category = await Category.findById(product.category)
-    
 
-    let checkUserRole = product.user.toString() === user.id.toString() || user.role === "superadmin"
-    if (!checkUserRole) {
-        throw new ApiError(400, "You are not authorized to delete this product")
-    }
+
+ 
     if (findProductCategory.length === 1) {
         await category.deleteOne()
     }
@@ -410,7 +415,7 @@ const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
             .populate("products.productId", "title price image")
 
         const addresses = await Address.find()
-            const getAllUserPayment=await UserPayment.find()
+        const getAllUserPayment = await UserPayment.find()
 
         const ordersWithDetails = getAllOrdered.map(order => {
             const orderAddress = addresses.find(address => address.user.toString() === order.userId?._id.toString());
@@ -418,32 +423,32 @@ const getOrdersBySellerProducts = asyncHandler(async (req, res) => {
             return {
                 ...order.toObject(),
                 address: orderAddress || null,
-                paymentData:payment
+                paymentData: payment
             };
         });
         // Extract product IDs of admin's products
-        const sellerProductIds =sellerProducts.length !== 0 ? sellerProducts.map(p => p._id.toString()): []
-    let filterSellerProducts
+        const sellerProductIds = sellerProducts.length !== 0 ? sellerProducts.map(p => p._id.toString()) : []
+        let filterSellerProducts
         if (sellerProducts.length === 0) {
-            filterSellerProducts=ordersWithDetails
-        }else{
-            
-                 filterSellerProducts = ordersWithDetails
-            .map(order => {
-                // keep only the products that belong to this seller
-                const sellerItems = order.products.filter(p =>
-                    sellerProductIds.includes(p.productId?._id.toString())
-                );
+            filterSellerProducts = ordersWithDetails
+        } else {
 
-                return {
-                    ...order,
-                    products: sellerItems
-                };
-            })
-            .filter(Boolean);
+            filterSellerProducts = ordersWithDetails
+                .map(order => {
+                    // keep only the products that belong to this seller
+                    const sellerItems = order.products.filter(p =>
+                        sellerProductIds.includes(p.productId?._id.toString())
+                    );
+
+                    return {
+                        ...order,
+                        products: sellerItems
+                    };
+                })
+                .filter(Boolean);
 
         }
-     
+
 
         res.status(200).json(new ApiResponse(200, filterSellerProducts));
     } catch (error) {
@@ -467,7 +472,7 @@ const orderConfirmed = asyncHandler(async (req, res) => {
 
     }
     const order = await Order.findById(orderId)
-    .populate("userId", "username email phone")
+        .populate("userId", "username email phone")
     if (!order) {
         throw new ApiError(404, false, "no order founded", false)
 
@@ -614,8 +619,8 @@ const orderPickedByCounter = asyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, null, "order Picked By counter", true))
 })
 
-const refund=asyncHandler(async(req,res)=>{
-const user = req.user
+const refund = asyncHandler(async (req, res) => {
+    const user = req.user
     const { orderId } = req.params
     if (!user) {
         throw ApiError(401, false, "user not loged in!", false)
@@ -623,26 +628,26 @@ const user = req.user
     if (!orderId) {
         throw new ApiError(401, false, "order id not provided", false)
     }
-     if (sellerRole !== user.role) {
+    if (sellerRole !== user.role) {
         throw new ApiError(401, false, "you can't access secure route", false)
 
     }
-const order = await Order.findById(orderId)
-  .populate("userId", "username email") 
-  .populate("products.productId", "title image price");
+    const order = await Order.findById(orderId)
+        .populate("userId", "username email")
+        .populate("products.productId", "title image price");
     if (!order) {
         throw new ApiError(404, false, "no order founded", false)
-  
+
     }
-   const refund= order.refund
-   order.refund=!refund
-   await order.save()
+    const refund = order.refund
+    order.refund = !refund
+    await order.save()
     const refundedProducts = order.products.map(p => p.productId);
-  const email = order.userId.email;
-  const userName = order.userId.username || "Customer";
-  
-await sendEmailRefundConfirmation(order,refundedProducts,email,userName)
-  
+    const email = order.userId.email;
+    const userName = order.userId.username || "Customer";
+
+    await sendEmailRefundConfirmation(order, refundedProducts, email, userName)
+
 
     res.status(200).json(new ApiResponse(200, null, "payment refunded", true))
 

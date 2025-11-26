@@ -6,6 +6,7 @@ interface ProductInterface {
   category: { _id: string, categoryName: string };
   image: string;
   rating?: number;
+  discount:number;
   countInStock: number;
   brand: string;
   user: string;

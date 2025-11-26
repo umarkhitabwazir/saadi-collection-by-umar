@@ -76,7 +76,7 @@ return;
           <p className="text-black text-lg mt-4 font-medium">Processing Order...</p>
         </div>
       ) : (
-        <div className="   w-full ">
+        <div className="h-full min-h-screen w-full ">
           {/* Order Form */}
 
           <div  className="rounded-lg flex flex-wrap justify-evenly  w-full ">

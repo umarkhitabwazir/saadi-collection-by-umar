@@ -10,7 +10,7 @@ const PendingOrderComponent = ({
   pendingOders,
   products,
 }: {
-  fetchOrders:()=>void ,
+  fetchOrders: () => void,
   pendingOders: OrderInterface[];
   products: ProductInterface[];
 }) => {
@@ -44,7 +44,7 @@ const PendingOrderComponent = ({
       setLoadingMap((prev) => ({ ...prev, [orderId]: false }));
 
       if (error instanceof AxiosError) {
-return;
+        return;
       }
     }
   };
@@ -135,7 +135,7 @@ return;
                   <p className="text-sm text-gray-600 mb-2">
                     transactionId:{' '}
                     <span className={`font-medium text-green-500 `}>
-                      {order.transactionId}
+                      {order.transactionId || "N/A"}
                     </span>
                   </p>
 
@@ -144,7 +144,7 @@ return;
                     <span className="font-medium text-gray-800">
                       PKR{' '}{order.totalPrice.toFixed(2)}
                     </span>{' '}
-                    (Tax: PKR{' '}{order.taxPrice.toFixed(2)}, Shipping: ${order.shippingPrice.toFixed(2)})
+                    (Tax: PKR{' '}{order.taxPrice.toFixed(2)}, Shipping: {order.shippingPrice.toFixed(2)})
                   </p>
 
                   <div className=" flex gap-2 items-center justify-center flex-wrap">
@@ -155,32 +155,59 @@ return;
                       return (
                         <div
                           key={orderProduct.productId._id}
-                          className=""
+                          className="bg-white rounded-lg border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
                         >
-                          <div className="flex flex-wrap items-center gap-4 p-4 justify-center      transition">
-                            <Image
-                              src={product.image}
-                              alt={product.title}
-                              className="rounded-lg object-cover w-full h-auto"
-                              width={120}
-                              height={120}
-                            />
-                            <div>
-                              <h3 className="text-lg font-semibold text-gray-800">
-                                {product.title}
-                              </h3>
-                              <p className="text-sm text-gray-500">
-                                Price: PKR{' '}{product.price.toFixed(2)}
-                              </p>
-                              <p className="text-sm text-gray-500">
-                                Quantity: {orderProduct.quantity}
-                              </p>
+                          <div className="flex flex-col sm:flex-row gap-5 p-6">
+
+                            <div className="w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
+                              <Image
+                                src={product.image}
+                                alt={product.title}
+                                className="rounded-md object-center w-full h-full border border-gray-100"
+                                width={96}
+                                height={96}
+                              />
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="mb-4">
+                                <h3 className="text-lg font-semibold text-gray-900 leading-snug line-clamp-2">
+                                  {product.title}
+                                </h3>
+                                <span className="text-xs text-gray-500 uppercase tracking-wide">
+                                  Product
+                                </span>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-6 max-w-xs">
+                                <div>
+                                  <span className="block text-xs text-gray-500 uppercase tracking-wide mb-1">
+                                    Price
+                                  </span>
+                                  <p className="text-base font-semibold text-gray-900">
+                                    PKR {orderProduct.price.toFixed(2)}
+                                  </p>
+                                </div>
+                                <div className="text-sm">
+                                  <span className="text-gray-500">Subtotal: </span>
+                                  <span className="font-semibold text-gray-900">
+                                    {(orderProduct.price * orderProduct.quantity).toFixed(2) || 'N/A'}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span className="block text-xs text-gray-500 uppercase tracking-wide mb-1">
+                                    Quantity
+                                  </span>
+                                  <p className="text-base font-semibold text-gray-900">
+                                    {orderProduct.quantity}
+                                  </p>
+                                </div>
+                              </div>
                             </div>
                           </div>
-
                         </div>
-
                       );
+
                     })}
 
                   </div>
