@@ -141,6 +141,7 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
                         "text-gray-700 leading-relaxed break-all  transition-all duration-300" :
                         "text-gray-700 leading-relaxed line-clamp-3 break-all transition-all duration-300"
                       }>
+                        
                         {products.description || "No description available."}
                       </p>
                       <button
