@@ -56,9 +56,6 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
     
         return (
           <div key={products._id}>
-<div>
-  <h1>Quantitys:</h1>
-</div>
             <div >
               <div className="flex flex-wrap justify-center md:flex-nowrap p-4 gap-6">
                 <div className="rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-4xl flex flex-wrap justify-center items-center md:justify-start md:flex-row md:items-start gap-8 p-6 border border-gray-100">
@@ -97,7 +94,7 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
                   </div>
 
                   {/* Product Details */}
-                  <div className="flex-1 flex flex-col gap-4 min-w-[300px]">
+                  <div className="flex-1 flex flex-wrap flex-col gap-4 min-w-[300px]">
                     {/* Title and Basic Info */}
                     <div className="space-y-3">
                       <h1 className="text-3xl font-bold text-gray-900 leading-tight">
@@ -138,9 +135,11 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
                     {/* Description with Expand/Collapse */}
                     <div className="">
                       <h1 className="font-semibold text-gray-700" >Discription:</h1>
-                      <p className={openId === products._id ?
-                        "text-gray-700 leading-relaxed break-words transition-all duration-300" :
-                        "text-gray-700 leading-relaxed line-clamp-3 break-words transition-all duration-300"
+                      <p 
+                        onClick={() => setOpenId(openId === products._id ? null : products._id)}
+                      className={openId === products._id ?
+                        "text-gray-700 leading-relaxed break-all transition-all duration-300" :
+                        "text-gray-700 leading-relaxed line-clamp-3 break-all transition-all duration-300"
                       }>
                         {products.description || "No description available."}
                       </p>
