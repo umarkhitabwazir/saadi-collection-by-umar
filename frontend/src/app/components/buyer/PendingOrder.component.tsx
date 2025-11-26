@@ -187,6 +187,7 @@ const PendingOrderComponent = ({
                                   <p className="text-base font-semibold text-gray-900">
                                     PKR {orderProduct.price.toFixed(2)}
                                   </p>
+                                  
                                 </div>
                                 <div className="text-sm">
                                   <span className="text-gray-500">Subtotal: </span>
