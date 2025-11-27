@@ -142,7 +142,7 @@ const taxAmount = (TAX_RATE / 100) * productTotalPrice;
   await sendEmailOrderPlaced(order, orderedProduct, user.email, user.username)
   
   for (const sellerEmail of sellerEmails) {
-  await sendEmailOrderPlacedSeller(order, orderedProduct, sellerEmail);
+  await sendEmailOrderPlacedSeller(order, orderedProduct,sellerEmails);
 }
  
 

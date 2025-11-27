@@ -57,7 +57,7 @@ const GetProductsByIdsComponent = ({ productIds }: { productIds: string[] | [] }
         return (
           <div key={products._id}>
             <div >
-              <div className="flex flex-wrap justify-center md:flex-nowrap p-4 gap-6">
+              <div className="flex flex-wrap justify-center md:flex-nowrap md:p-4 gap-6">
                 <div className="rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 w-full max-w-4xl flex flex-wrap justify-center items-center md:justify-start md:flex-row md:items-start gap-8 p-6 border border-gray-100">
 
                   {/* Product Image Container */}

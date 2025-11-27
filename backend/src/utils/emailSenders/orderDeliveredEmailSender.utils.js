@@ -5,14 +5,14 @@ import { orderDelivered } from "../../emailTemplate/orderDeliveredTemp.js";
 
 
 
-export const orderDeliveredEmailSender= async (email, orderId) => {
+export const orderDeliveredEmailSender= async (email, order) => {
 
  try {
      const mailOptions = {
    from: `"Order Delivered" <${process.env.EMAIL_USER}>`,
    to: email,
    subject: "Your order has been delivered",
-   html:orderDelivered(orderId)
+   html:orderDelivered(order)
  };
  
  const info = await transporter.sendMail(mailOptions);

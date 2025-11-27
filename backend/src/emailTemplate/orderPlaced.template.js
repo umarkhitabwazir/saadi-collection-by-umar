@@ -14,7 +14,10 @@ export const orderConfirmationTemp = (order, orderedProducts, userName) => {
             <img src="${item.image}" alt="${item.title || "Product Image"}" 
               style="width:50px;height:50px;object-fit:cover;border-radius:4px;"/>
           </td>
-          <td style="padding:8px;border:1px solid #ddd;text-align:center;">${item.price || "Price"}</td>
+          <td
+           style="padding:8px;border:1px solid #ddd;text-align:center;">
+           ${item.price || "Price"}
+           </td>
           <td style="padding:8px;border:1px solid #ddd;text-align:center;">${item.title || "title"}</td>
           <td style="padding:8px;border:1px solid #ddd;text-align:center;">${quantity}</td>
         </tr>

@@ -1,31 +1,36 @@
 export const orderPlacedSellerTemplate = (order, orderedProducts) => {
-  const websiteUrl = process.env.WEBSITE_URL;
+    const websiteUrl = process.env.WEBSITE_URL;
 
-  const productList = orderedProducts
-    .map((item, index) => {
-      const matchedProduct = order.products.find(
-        p => p.productId.toString() === item._id.toString()
-      );
-      const quantity = matchedProduct ? matchedProduct.quantity : 0;
+    const productList = orderedProducts
+        .map((item, index) => {
+            const matchedProduct = order.products.find(
+                p => p.productId.toString() === item._id.toString()
+            );
+            const quantity = matchedProduct ? matchedProduct.quantity : 0;
 
-      return `
+            return `
         <tr>
           <td style="padding:12px;border-bottom:1px solid #e0e0e0;text-align:center;font-family:Arial,sans-serif;color:#555;">${index + 1}</td>
           <td style="padding:12px;border-bottom:1px solid #e0e0e0;">
-            <div style="display:flex;align-items:center;gap:12px;">
+            <div style="display:flex;align-items:center;gap:14px;">
               <img src="${item.image}" 
                    alt="${item.title || "Product Image"}"
                    style="width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid #f0f0f0;"/>
-              <span style="font-family:Arial,sans-serif;color:#333;font-weight:500;">${item.title}</span>
             </div>
           </td>
-          <td style="padding:12px;border-bottom:1px solid #e0e0e0;text-align:center;font-family:Arial,sans-serif;color:#555;">PKR ${item.price}</td>
-          <td style="padding:12px;border-bottom:1px solid #e0e0e0;text-align:center;font-family:Arial,sans-serif;color:#555;font-weight:600;">${quantity}</td>
+          <td
+           style="padding:12px;border-bottom:1px solid #e0e0e0;text-align:center;font-family:Arial,sans-serif;color:#555;">
+           PKR ${(item.price)}
+           </td>
+          <td 
+          style="padding:12px;border-bottom:1px solid #e0e0e0;text-align:center;font-family:Arial,sans-serif;color:#555;font-weight:600;">
+          ${quantity}
+          </td>
         </tr>`;
-    })
-    .join("");
+        })
+        .join("");
 
-  return `
+    return `
   <!DOCTYPE html>
   <html>
   <head>
@@ -78,7 +83,9 @@ export const orderPlacedSellerTemplate = (order, orderedProducts) => {
           .info-label {
               font-weight: 600;
               color: #2c3e50;
-              display: inline-block;
+             display: flex;
+              flex-wrap: wrap;
+             gap: 12px;
               width: 120px;
           }
           .info-value {
@@ -155,13 +162,13 @@ export const orderPlacedSellerTemplate = (order, orderedProducts) => {
 
           <div class="order-info">
               <div><span class="info-label">Order ID:</span> <span class="info-value">${order._id.toString()}</span></div>
-              <div><span class="info-label">Date:</span> <span class="info-value">${new Date().toLocaleDateString('en-US', { 
-                  year: 'numeric', 
-                  month: 'long', 
-                  day: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-              })}</span></div>
+              <div><span class="info-label">Date:</span> <span class="info-value">${new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    })}</span></div>
               <div><span class="info-label">Payment Method:</span> <span class="info-value">${order.paymentMethod || "Not specified"}</span></div>
           </div>
 

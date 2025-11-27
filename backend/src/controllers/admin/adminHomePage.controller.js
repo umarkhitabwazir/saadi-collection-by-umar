@@ -25,7 +25,8 @@ export const adminHomePageController = asyncHandler(async (req, res) => {
       { $group: { _id: null, total: { $sum: "$totalPrice" } } },
     ]);
 
-    const totalRevenue = revenueResult[0]?.total || 0;
+    const totalRevenue = Number((revenueResult[0]?.total || 0).toFixed(2))
+
 
     return res
       .status(200)

@@ -16,6 +16,7 @@ import { Address } from "../models/address.model.js";
 import { sendEmailRefundConfirmation } from "../utils/emailSenders/sendRefundConfirmation.utils.js";
 import { UserPayment } from "../models/UserPayment.model.js";
 import { sendEmailOrderConfirmed } from "../utils/emailSenders/orderConfirmEmailSender.utils.js";
+import { orderDeliveredEmailSender } from "../utils/emailSenders/orderDeliveredEmailSender.utils.js";
 
 
 dotenv.config({
@@ -285,8 +286,6 @@ let updateProductWithCategory = asyncHandler(async (req, res) => {
     if (!checkUserRole) {
         throw new ApiError(400, "You are not authorized to update this product")
     }
-  const checkProductInOrder=await Order.findOne({ "products.productId": product._id });
-  console.log("checkProductInOrder",checkProductInOrder)
     product.category = category.id
     product.title = title
     product.price = price
@@ -473,6 +472,8 @@ const orderConfirmed = asyncHandler(async (req, res) => {
     }
     const order = await Order.findById(orderId)
         .populate("userId", "username email phone")
+        .populate("productId", "image")
+
     if (!order) {
         throw new ApiError(404, false, "no order founded", false)
 
@@ -573,7 +574,7 @@ const orderDelivered = asyncHandler(async (req, res) => {
         throw new ApiError(401, false, "you can't access secure route", false)
 
     }
-    const order = await Order.findById(orderId).populate("products.productId", "title price image").populate("userId", "email")
+    const order = await Order.findById(orderId).populate("products.productId", "title price image").populate("userId", "username phone email")
     if (!order) {
         throw new ApiError(404, false, "no order founded", false)
 
@@ -585,11 +586,7 @@ const orderDelivered = asyncHandler(async (req, res) => {
 
     await order.save()
     const email = order.userId.email
-    const image = order.products[0].productId.image
-    const title = order.products[0].productId.title
-    const price = order.products[0].productId.price
-    const subject = order.isDelivered ? "delivered" : "not delivered"
-    await sendEmail(email, image, title, price, subject)
+    await orderDeliveredEmailSender(email ,order)
     res.status(200).json(new ApiResponse(200, null, "order delivered successfully", true))
 })
 const orderPickedByCounter = asyncHandler(async (req, res) => {

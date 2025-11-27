@@ -119,7 +119,7 @@ const ShippingComponent = () => {
 
 
 
-        <div className="flex flex-wrap justify-center p-2 rounded-lg shadow-md">
+        <div className="flex flex-wrap justify-center md:p-2 rounded-lg shadow-md">
 
 
 
