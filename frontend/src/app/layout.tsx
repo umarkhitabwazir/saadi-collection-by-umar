@@ -20,9 +20,42 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SAADiCcollection.shop - Your One-Stop Online Store",
-  description: "Discover the best deals on electronics, fashion, and more. Shop now for high-quality products at unbeatable prices!",
+  title: "SAADiCcollection.shop",
+  description: "Buy electronics, fashion, home items, and daily essentials.",
+  keywords: [
+    "online store",
+    "electronics",
+    "fashion",
+    "home products",
+    "best prices",
+    "saadi collection"
+  ],
+  openGraph: {
+    title: "SAADiCcollection.shop",
+    description: "Shop electronics, fashion, and home items.",
+    images: [
+      {
+        url: "/og-image1.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Saadi Collection Store"
+      },
+      {
+        url: "/og-image2.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Saadi Collection Store"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SAADiCcollection.shop",
+    description: "Shop electronics, fashion, and home items.",
+    images: ["/og-image1.jpg"]
+  }
 };
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
